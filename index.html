@@ -5,182 +5,405 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/7.0.1/css/all.min.css" />
+
     <title>Document</title>
 </head>
 <!-- to use later on grid grid-cols-7 grid-rows-3  -->
 
 <body class="container mx-auto justify-center bg-black/20 ">
-    <header class="bg-black/70 flex space-x-4">
-        <div id="logo"></div>
-        <div id="search-bar"></div>
+    <header class="bg-gray-800 text-white p-4 shadow-md">
+        <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
+            <div id="logo" class="text-xl font-bold">diOffice</div>
+            <div id="search-bar" class="w-full sm:w-64">
+                <input type="text" placeholder="Search employees..."
+                    class="w-full px-4 py-2 rounded-lg text-gray-800 bg-white">
+            </div>
+        </div>
     </header>
     <main class="flex gap-4 mt-10 space-x-10">
-        <aside class="border-b bg-white/70 flex flex-col w-70 h-150 items-center ml-6 rounded overflow-scrol">
-            <button id="add-employee-btn" class="rounded bg-blue-500 px-8 py-1.5 mt-3 hover:bg-blue-700 hover:text-white transform duration-300 mb-5"> add Employee</button>
-                <ul id="employee-list" class="overflow-scroll border px-2 rounded">
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
+        <aside class="w-full lg:w-80 bg-white rounded-lg shadow-md p-4">
+            <h2 class="text-center font-bold mb-1 ui-sans-serif">List of unassigned workers</h2 >
+            <button id="add-employee-btn"
+                class="w-full rounded-lg bg-blue-500 px-4 py-3 text-white font-medium hover:bg-blue-600 transition duration-300 mb-4">
+                Add New Worker
+            </button>
+
+            <div class="scrollable-sidebar">
+                <ul id="employee-list" class="space-y-3 overflow-scroll h-100">
+                    
+                    <!-- <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
                             </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
-                            </div>
-                        </div>
-                    </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
-                            </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
-                            </div>
-                        </div>
-                    </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
-                            </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
                             </div>
                         </div>
                     </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
                             </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
-                            </div>
-                        </div>
-                    </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
-                            </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
                             </div>
                         </div>
                     </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
                             </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
-                            </div>
-                        </div>
-                    </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
-                            </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
                             </div>
                         </div>
                     </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
                             </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
-                            </div>
-                        </div>
-                    </li>
-                    <li draggable="true" class="bg-white list-el">
-                        <div id="emp-1" class="flex border rounded m-auto container mx-auto my-5 px-2 py-1">
-                            <img src="assets/guy.png" alt="emp_pic" class="w-15 h-15 rounded-full">
-                            <div class="emp-info">
-                                <div id="name">abduljableevland</div>
-                                <div id="position">manager</div>
-                            </div>
-                            <div id="edit_delete" class="flex flex-col mx-2 gap-2">
-                                <button id="delete" class="border rounded hover:bg-red-500 hover:text-white transform duration-300">delete</button>
-                                <button id="update" class="border rounded hover:bg-green-500 hover:text-white transform duration-300">update</button>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
                             </div>
                         </div>
                     </li>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
+                            </div>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
+                            </div>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
+                            </div>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
+                            </div>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
+                            </div>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </li>
+                    <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
+                        <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                            <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
+                            <div class="emp-info flex-1 min-w-0">
+                                <div id="name" class="font-medium truncate">John Doe</div>
+                                <div id="position" class="text-sm text-gray-600 truncate">Developer</div>
+                            </div>
+                            <div class="employee-actions flex gap-2">
+                                <button
+                                    class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300">
+                                    Delete
+                                </button>
+                                <button
+                                    class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
+                                    Update
+                                </button>
+                            </div>
+                        </div>
+                    </li> -->
+
+
+
                 </ul>
+            </div>
         </aside>
         <div id="workspace" class="w-280 h-160 bg-black/10 bg-[url('assets/workspace_area.jpg')] border-b ">
             <div id="upper-rooms" class="flex">
-                <div id="conference-room" class="dragging-area hover:bg-blue-500/50 w-105 h-55 justify-center items-center border-b transform duration-300">
-                    <p class="text-center text-black">Conference room</p>
+                <div id="conference-room"
+                    class="flex flex-col justify-center items-center dragging-area hover:bg-blue-500/50 w-105 h-55 border-b transform duration-300">
+                    <!-- <p class="text-black mb-2">Conference room</p> -->
+                    <button id="listInConferenceRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
+                        title="See who is allowed in this room">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <ul id="inConferenceRoom" class="border bg-white/20 w-40 h-60 -mb-60 overflow-scroll hidden">
+                    </ul>
                 </div>
+
                 <div class=" w-49 h-55 justify-center items-center ">
-                    <!-- <p class="text-black text-center">Hall and reception</p> -->
                 </div>
-                <div id="servers" class="dragging-area hover:bg-green-500/50 w-61 h-55 justify-center items-center border-b transform duration-300">
-                    <p class="text-center text-black">servers</p>
+                <div id="servers"
+                    class=" flex flex-col justify-center items-center text-center dragging-area hover:bg-green-500/50 w-61 h-55 justify-center items-center border-b transform duration-300">
+                    <!-- <p class="text-center text-black">servers</p> -->
+                    <button id="listInServersRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
+                        title="See who is allowed in this room">
+                        <i class="fa-solid fa-chevron-down"></i>
+
+                    </button>
+                    <ul id="inServersRoom" class="border bg-white/20 w-40 h-60 -mb-60 overflow-scroll hidden">
+                    </ul>
                 </div>
-                <div id="security-room" class="dragging-area hover:bg-red-500/50 w-62 h-55 justify-center items-center border-b transform duration-300">
-                    <p class="text-center text-black">security-room</p>
+                <div id="security-room"
+                    class="flex flex-col dragging-area hover:bg-red-500/50 w-62 h-55 justify-center items-center border-b transform duration-300">
+                    <!-- <p class="text-center text-black">security-room</p> -->
+                    <button id="listInSecurityRoom"
+                        class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                        title="See who is allowed in this room">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    <ul id="inSecurityRoom" class="border bg-white/20 w-40 h-60 -mb-60 overflow-scroll hidden">
+                    </ul>
                 </div>
             </div>
-            <div id="bottom-rooms" class="flex ">
-                <div id="reception-room" class=" dragging-area hover:bg-red-500/50 w-105 h-105 justify-center items-center border-b transform duration-300">
-                    <p class="text-black text-center">Hall and reception</p>
+            <div id="bottom-rooms" class="flex">
+                <div id="reception-room"
+                    class="flex flex-col dragging-area hover:bg-red-500/50 w-105 h-105 justify-center items-center border-b transform duration-300">
+                    <!-- <p class="text-black text-center">Hall and reception</p> -->
+                     <ul id="inReceptionRoom" class="border bg-white/20 w-40 h-60 -mt-60 overflow-scroll hidden">
+                    </ul>
+                    <button id="listInReceptionRoom"
+                        class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                        title="See who is allowed in this room">
+                        <i class="fa-solid fa-chevron-down"></i>
+                    </button>
+                    
+
                 </div>
                 <div id="blank-hall" class=" w-50 h-105 justify-center items-center border-b">
-                    <!-- <p class="text-black text-center">Hall and reception</p> -->
                 </div>
                 <div id="twin-rooms" class="flex grid grid-cols-2 grid-rows-2">
                     <div class=" w-60 h-50">
                     </div>
                     <div class=" w-60 h-50">
                     </div>
-                    <div id="staff-room" class="dragging-area hover:bg-green-500/50 w-60 h-50 justify-center items-center border-b transform duration-300">
-                        <p class="text-black text-center">staff-room</p>
+                    <div id="staff-room"
+                        class="flex flex-col dragging-area hover:bg-green-500/50 w-60 h-50 justify-center items-center border-b transform duration-300">
+                        <!-- <p class="text-black text-center">staff-room</p> -->
+                         <ul id="inStaffRoom" class="border bg-white/20 w-40 h-60 -mt-60 overflow-scroll hidden">
+                        </ul>
+                        <button id="listInStaffnRoom"
+                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                            title="See who is allowed in this room">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        
                     </div>
-                    <div id="archive" class="dragging-area hover:bg-red-500/50 w-61 h-50 justify-center items-center border-b transform duration-300">
-                        <p class="text-black text-center">archive</p>
+                    <div id="archive"
+                        class="flex flex-col dragging-area hover:bg-red-500/50 w-61 h-50 justify-center items-center border-b transform duration-300">
+                        <!-- <p class="text-black text-center">archive</p> -->
+                         <ul id="inArchiveRoom" class="border bg-white/20 w-40 h-60 -mt-60 overflow-scroll hidden">
+                        </ul>
+                        <button id="listInArchiveRoom"
+                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                            title="See who is allowed in this room">
+                            <i class="fa-solid fa-chevron-down"></i>
+                        </button>
+                        
                     </div>
                 </div>
             </div>
-
-
         </div>
+        <div id="add-employee-form"
+            class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50  hidden overflow-scroll ">
+            <!-- dynamic form modal to add employees to the list of employees -->
+            <form id="form" class="flex flex-col w-full max-w-md bg-white rounded-xl p-6 border shadow-xl mx-4 mt-auto">
+                <div id="form-header" class="flex justify-between items-center mb-6">
+                    <h2 id="title" class="text-xl font-semibold">Add Employee</h2>
+                    <button id="closeForm" type="button"
+                        class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
+                        X
+                    </button>
+                </div>
+
+                <div class="space-y-4">
+                    <div id="profil-pic-div" class="flex flex-col justify-center items-center">
+                        <label for="pic" class="block mb-1">Photo de profil :</label>
+                        <div id="pic" class="w-20 h-20 rounded-full bg-gray-500 flex flex-col justify-center items-center hover:bg-gray-700 transform duration-300">
+                            <i class="fa-solid fa-camera w-10 h-10 mt-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="nom" class="block mb-1">Nom :</label>
+                        <input type="text" id="nom" placeholder="Nom" class="w-full border p-2 rounded" required>
+                    </div>
+
+                    <div>
+                        <label for="pnom" class="block mb-1">Prenom :</label>
+                        <input type="text" id="pnom" placeholder="Prenom" class="w-full border p-2 rounded" required>
+                    </div>
+                    
+
+                    <div>
+                        <label for="positionsSelector" class="block mb-1">Poste :</label>
+                        <select id="positionsSelector" class="w-full border p-2 rounded">
+                            <option value="" selected>Position</option>
+                            <option value="security">Security Agent</option>
+                            <option value="receptionist">Receptionist</option>
+                            <option value="technician">Technician</option>
+                            <option value="employee">Employee</option>
+                        </select>
+                    </div>
+
+                    <div>
+                        <label for="desc" class="block mb-1">Description</label>
+                        <textarea name="description" id="desc" class="w-full border rounded p-2" rows="3"></textarea>
+                    </div>
+
+                    <div class="flex items-center justify-between">
+                        <label for="experience" class="block">Experience :</label>
+                        <button id="moreExperienceBtn" type="button"
+                            class="bg-blue-500 rounded hover:bg-blue-600 text-white transform duration-300 p-2 w-8 h-8 flex items-center justify-center"
+                            onclick="addDynamicField()">
+                            +
+                        </button>
+                    </div>
+
+                    <div id="divForDynamicSection" class="overflow-scroll max-h-32">
+                        <!-- Dynamic sections will be added here -->
+                    </div>
+
+                    <div class="flex flex-col sm:flex-row gap-2">
+                        <button id="formBtn" type="submit"
+                            class="flex-1 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition">
+                            ADD
+                        </button>
+                        <!-- <button id="formBtnEdit" type="button"
+                            class="flex-1 rounded bg-orange-500 px-4 py-2 text-white hover:bg-orange-600 transition">
+                            Edit
+                        </button> -->
+                    </div>
+                </div>
+            </form>
+            <!-- ///////////////////////////////////////////////////////////// -->
+        </div>
+
     </main>
 
+    <!-- ///////////////////////////////////////////////////////////// -->
+
+
+
+    <!-- //////////////////////////////////////////////////////////// -->
     <footer>
 
     </footer>
     <script src="js/main.js"></script>
+
+
+
 </body>
 
 </html>
