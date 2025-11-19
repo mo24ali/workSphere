@@ -1,7 +1,7 @@
 let workspace = document.getElementById("workspace");
-let addEmployeeBtn = document.getElementById("add-employee-btn")
-let employeeListElements = document.querySelectorAll("li") //les li de ul
-let employeeList = document.getElementById("employee-list") //la liste ul qui garde tous le employees
+let addEmployeeBtn = document.getElementById("add-employee-btn");
+let employeeListElements = document.querySelectorAll("li");
+let employeeList = document.getElementById("employee-list");
 //arrays to store the staff
 let employeeTab = JSON.parse(localStorage.getItem("employees")) || [];
 let receptArr = JSON.parse(localStorage.getItem("receptionists")) || [];
@@ -17,115 +17,99 @@ let editBtn = document.getElementById("formBtnEdit");
 let closeForm = document.getElementById("closeForm");
 let dynamicDiv = document.getElementById("divForDynamicSection");
 let addMoreExperience = document.getElementById("moreExperienceBtn");
-//rooms in the workplace
-let receptionRoom = document.getElementById("reception-room");
-let archive = document.getElementById("archive");
-let confRoom = document.getElementById("conference-room");
-let serversRoom = document.getElementById("servers");
-let securityRoom = document.getElementById("security-room");
-let staffRoom = document.getElementById("staff-room");
 
+//global variables
+let experienceCount = 0;
+let currentEmpID = null;
 
-function dragAndDrop() {
-    let selected;
-    for (let el of employeeListElements) {
-
-        el.addEventListener("dragstart", (e) => {
-            selected = e.target;
-            console.log(selected);
-            console.log(selected.value);
-
-            // console.log("the dragstart event");
-
-
-        })
-        receptionRoom.addEventListener("dragover", (e) => {
-            e.preventDefault();
-        })
-
-        receptionRoom.addEventListener("drop", (e) => {
-            receptionRoom.appendChild(selected);
-
-            /**
-             *  
-             * still some logic to make each employee in it's place
-             * 
-             * */
-
-
-            selected = null;
-        })
-
-    }
+//popup variables 
+let employeeDetailsPopup = document.getElementById("employee-details-popup");
+let employeeDetailsContent = document.getElementById("employee-details-content");
+let closeDetailsPopup = document.getElementById("closeDetailsPopup");
+// Initialize form functionality
+function initForm() {
+    setupEventListeners();
+    fillTheUnassignedWorkersAuto();
 }
 
+function setupEventListeners() {
+    // Open form
+    addEmployeeBtn.addEventListener('click', openForm);
+    
+    // Close form
+    closeForm.addEventListener("click", closeFormHandler);
+    
+    // Add experience button
+    addMoreExperience.addEventListener("click", addExperienceField);
+    
+    // Form submission
+    form.addEventListener("submit", handleFormSubmit);
+    
+    // File selector for profile picture
+    document.getElementById("fileSlect").addEventListener("click", () => {
+        document.getElementById("fileElem").click();
+    });
+    closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
+    
+    // Close popup when clicking outside
+    employeeDetailsPopup.addEventListener("click", (e) => {
+        if (e.target === employeeDetailsPopup) {
+            closeEmployeeDetails();
+        }
+    });
+}
 
-dragAndDrop();
-
-//dynamic form handling
-addEmployeeBtn.addEventListener('click', () => {
-    // alert("add employee")
+function openForm() {
     addForm.classList.remove("hidden");
-    // fillTheUnassignedWorkersAuto();
-})
+    resetForm();
+}
 
+function closeFormHandler() {
+    resetForm();
+    addForm.classList.add("hidden");
+}
 
+function resetForm() {
+    form.reset();
+    dynamicDiv.innerHTML = "";
+    experienceCount = 0;
+    currentEmpID = null;
+}
 
-
-
-
-
-// function updateEmployee(empId) {
-
-// }
-
-// function deleteEmployee(empId) {
-
-// }
-
-
-
-
-
-// function confirmExperience() {
-
-// }
-
-
-// function updateModalForm() {
-
-// }
-
-
-//lists of the persons allowed in each room /////////////////////////////////////////////////////
-let archiveAllowed = document.getElementById("listInArchiveRoom");
-let staffAllowed = document.getElementById("listInStaffnRoom");
-let receptionAllowed = document.getElementById("listInReceptionRoom");
-let securityAllowed = document.getElementById("listInSecurityRoom");
-let serversAllowed = document.getElementById("listInServersRoom");
-let conferenceAllowed = document.getElementById("listInConferenceRoom");
-
-conferenceAllowed.addEventListener('click', () => {
-    document.getElementById("inConferenceRoom").classList.toggle("hidden")
-})
-serversAllowed.addEventListener("click", () => {
-    document.getElementById("inServersRoom").classList.toggle("hidden")
-})
-securityRoom.addEventListener('click', () => {
-    document.getElementById("inSecurityRoom").classList.toggle("hidden")
-})
-receptionAllowed.addEventListener('click', () => {
-    document.getElementById("inReceptionRoom").classList.toggle("hidden")
-})
-staffAllowed.addEventListener('click', () => {
-    document.getElementById("inStaffRoom").classList.toggle("hidden")
-})
-archiveAllowed.addEventListener('click', () => {
-    document.getElementById("inArchiveRoom").classList.toggle("hidden")
-})
-
-////////////////////////////////////////////////////////////////////////////////////
-
+function addExperienceField() {
+    experienceCount++;
+    
+    const experienceField = document.createElement("div");
+    experienceField.className = "experience-field border p-4 mb-3 rounded";
+    experienceField.innerHTML = `
+        <div class="experience-filed flex flex-col">
+            <h3 class="font-medium mb-2">Experience #${experienceCount}</h3>
+            <div class="experience-section flex flex-col">
+                <label for="title${experienceCount}">Title : </label>
+                <input id="title${experienceCount}" class="title-input border rounded p-1 mb-2" required>
+                
+                <label for="desc${experienceCount}">Description : </label>
+                <textarea id="desc${experienceCount}" class="desc-input border rounded mb-2"></textarea>
+            </div>
+            <div class="flex flex-row space-x-6">
+                <div class="start-date flex flex-col">
+                    <label for="start${experienceCount}" class="mb-1">Start date : </label>
+                    <input type="date" id="start${experienceCount}" class="start-date-input border p-1 mb-3 w-40 rounded">
+                </div>
+                <div class="end-date flex flex-col">
+                    <label for="end${experienceCount}" class="mb-1">End date : </label>
+                    <input type="date" id="end${experienceCount}" class="end-date-input border p-1 mb-3 w-40 rounded">
+                </div>
+            </div>
+            <div class="flex flex-row space-x-4">
+                <button type="button" class="remove-btn rounded bg-red-500 hover:bg-red-700 w-24 text-white py-1" onclick="removeExperience(this)">Remove</button>
+                <button type="button" class="confirm-exp-btn rounded bg-blue-500 hover:bg-blue-700 w-24 text-white py-1" onclick="confirmExperience(this)">Confirm</button>
+            </div>
+        </div>
+    `;
+    
+    dynamicDiv.appendChild(experienceField);
+}
 
 function removeExperience(button) {
     const experienceField = button.closest('.experience-field');
@@ -139,228 +123,200 @@ function updateExperienceNumbers() {
     experienceFields.forEach((field, index) => {
         const title = field.querySelector('h3');
         title.textContent = `Experience #${index + 1}`;
+        
+        // Update IDs to maintain consistency
+        const inputs = field.querySelectorAll('input, textarea');
+        inputs.forEach(input => {
+            const oldId = input.id;
+            const baseName = oldId.replace(/\d+$/, '');
+            input.id = baseName + (index + 1);
+        });
+        
+        const labels = field.querySelectorAll('label');
+        labels.forEach(label => {
+            const oldFor = label.getAttribute('for');
+            if (oldFor) {
+                const baseName = oldFor.replace(/\d+$/, '');
+                label.setAttribute('for', baseName + (index + 1));
+            }
+        });
     });
 }
 
-function validateExperience() {
-    try {
-        const experiences = document.querySelectorAll('.experience-field');
-
-        for (let exp of experiences) {
-            const title = exp.querySelector('.title-input').value.trim();
-            const desc = exp.querySelector('.desc-input').value.trim();
-            const startDate = exp.querySelector('.start-date-input').value;
-            const endDate = exp.querySelector('.end-date-input').value;
-
-            if (!title) {
-                alert('Please enter a title for all experiences');
-                return false;
-            }
-
-            if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
-                alert('End date cannot be before start date');
-                return false;
-            }
-        }
-    } catch (e) {
-        console.log("the experience is not fetched")
+function confirmExperience(button) {
+    const experienceField = button.closest('.experience-field');
+    const titleInput = experienceField.querySelector('.title-input');
+    const descInput = experienceField.querySelector('.desc-input');
+    const startInput = experienceField.querySelector('.start-date-input');
+    const endInput = experienceField.querySelector('.end-date-input');
+    
+    const expTitle = titleInput.value.trim();
+    const expDesc = descInput.value.trim();
+    const startDate = startInput.value;
+    const endDate = endInput.value;
+    
+    // Validate this specific experience
+    if (!expTitle) {
+        alert('Please enter a title for this experience');
+        return;
     }
-
-    return true;
+    
+    if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
+        alert('End date cannot be before start date');
+        return;
+    }
+    
+    // Convert to read-only display
+    experienceField.innerHTML = `
+        <h3 class="font-medium mb-2">Experience #${Array.from(document.querySelectorAll('.experience-field')).indexOf(experienceField) + 1}</h3>
+        <p><strong>Title:</strong> ${expTitle}</p>
+        <p><strong>Description:</strong> ${expDesc || 'N/A'}</p>
+        <p><strong>Start:</strong> ${startDate || 'N/A'}</p>
+        <p><strong>End:</strong> ${endDate || 'N/A'}</p>
+        <button type="button" class="remove-btn rounded bg-red-500 hover:bg-red-700 w-24 text-white py-1 mt-2" onclick="removeExperience(this)">Remove</button>
+    `;
+    
+    Toastify({
+        text: "Experience added successfully!",
+        duration: 2000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        style: { background: "green" }
+    }).showToast();
 }
 
-form.addEventListener('submit', () => {
-    addForm.classList.remove("hidden");
-
-})
-
-// LOCALSTORAGE FUNCTIONS
-
-// dynamic form work with localstorage
-
-function validateForm(name, firstname, email) {
-    if (!validationName(name) || !validationFirstName(firstname) || !validationMail(email)) {
+function validateForm() {
+    const name = document.getElementById("nom").value.trim();
+    const firstname = document.getElementById("pnom").value.trim();
+    const email = document.getElementById("mail").value.trim();
+    const poste = document.getElementById("positionsSelector").value;
+    
+    // Basic validations
+    if (!name || name.length < 2) {
+        alert('Please enter a valid last name (at least 2 characters)');
         return false;
     }
-
-    const experiences = document.querySelectorAll('.experience-field');
-    if (experiences.length === 0) {
-        alert('Please add at least one experience');
+    
+    if (!firstname || firstname.length < 2) {
+        alert('Please enter a valid first name (at least 2 characters)');
         return false;
     }
-
-    if (!validateExperience()) {
-        return false;
-    }
-
-    return true;
-}
-
-function validationName(name) {
-    if (!name) {
-        alert('Please enter a last name');
-        return false;
-    }
-    if (name.length < 2) {
-        alert('Last name must be at least 2 characters long');
-        return false;
-    }
-    return true;
-}
-
-function validationFirstName(firstname) {
-    if (!firstname) {
-        alert('Please enter a first name');
-        return false;
-    }
-    if (firstname.length < 2) {
-        alert('First name must be at least 2 characters long');
-        return false;
-    }
-    return true;
-}
-
-function validationMail(email) {
-    const emailRegex = /^\S+@\S+\.\S+$/;
-    if (!email) {
-        alert('Please enter an email address');
-        return false;
-    }
-    if (!emailRegex.test(email)) {
+    
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!email || !emailRegex.test(email)) {
         alert('Please enter a valid email address');
         return false;
     }
+    
+    if (!poste) {
+        alert('Please select a position');
+        return false;
+    }
+    
+    // Experience validation
+    const experienceFields = document.querySelectorAll('.experience-field');
+    if (experienceFields.length === 0) {
+        alert('Please add at least one experience');
+        return false;
+    }
+    
+    // Check if all experiences are confirmed (converted to read-only)
+    const unconfirmedExperiences = document.querySelectorAll('.experience-field:has(.confirm-exp-btn)');
+    if (unconfirmedExperiences.length > 0) {
+        alert('Please confirm all experiences before submitting');
+        return false;
+    }
+    
     return true;
 }
 
-
-
-
-function generateId() {
-    return 'emp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 3);
-}
-//form data recovery 
-
-// let idCounter = 0;
-let experienceCount = 0;
-let empID;
-
-function addDynamicField(empId) {
-    empID = empId;
-    experienceCount++;
-
-    let newField = document.createElement("div");
-    newField.innerHTML = `
-        <div class="experience-filed flex flex-col">
-            <h3 class="font-medium mb-2">Experience #${experienceCount}</h3>
-            <div class="experience-section flex flex-col">
-                <label for="title${experienceCount}-empId">Title : </label>
-                <input id="title${experienceCount}-empId" class="title-input border rounded p-1 mb-2">
-
-                <label for="desc${experienceCount}-empId">Description : </label>
-                <textarea id="desc${experienceCount}-empId" class="desc-input border rounded mb-2"></textarea> 
-            </div>
-            <div class="flex flex-row space-x-6">
-                <div class="start-date flex flex-col">
-                    <label for="start${experienceCount}-empId" class="mb-1">Start date : </label>
-                    <input type="date" id="start${experienceCount}-empId" class="start-date-input border p-1 mb-3 w-40 rounded">
-                </div>
-                <div class="end-date flex flex-col">
-                    <label for="end${experienceCount}-empId" class="mb-1">End date : </label>
-                    <input type="date" id="end${experienceCount}-empId" class="end-date-input border p-1 mb-3 w-40 rounded">
-                </div>
-            </div>
-            <div class="flex flex-row space-x-4">
-                <button type="button" class="remove-btn rounded bg-red-500 hover:bg-red-700 w-24 text-white py-1" onclick="removeExperience(this)">Remove</button>
-                <button type="button" class="rounded bg-blue-500 hover:bg-blue-700 w-24 text-white py-1" onclick="submitExpertise(${experienceCount})">Confirm</button>
-            </div>
-        </div>
-    `;
-
-    newField.classList.add('border', 'p-4', 'mb-3', 'rounded', 'experience-field');
-
-    document.getElementById("divForDynamicSection").appendChild(newField);
-}
-
-function submitExpertise(count) {
-    const expTitle = document.getElementById(`title${count}-empId`).value.trim();
-    const expDesc = document.getElementById(`desc${count}-empId`).value.trim();
-    const start = document.getElementById(`start${count}-empId`).value;
-    const end = document.getElementById(`end${count}-empId`).value;
-
-    updateExperiences(empID, expTitle, start, end, expDesc);
-}
-
-function updateExperiences(empId, newTitle, startDate, endDate, description) {
-    let arr = JSON.parse(localStorage.getItem("employees")) || [];
-
-    let selectedEmp = arr.find(emp => emp.ID === empId);
-
-    if (selectedEmp) {
-        selectedEmp.expertise.push({
-            title: newTitle,
-            startDate: startDate,
-            endDate: endDate,
-            desc: description
-        });
-
-        localStorage.setItem("employees", JSON.stringify(arr));
-        console.log("Experience saved", selectedEmp);
-    } else {
-        console.warn("Employee not found with ID:", empId);
+function handleFormSubmit(e) {
+    e.preventDefault();
+    
+    if (!validateForm()) {
+        return;
     }
+    
+    const name = document.getElementById("nom").value.trim();
+    const firstname = document.getElementById("pnom").value.trim();
+    const email = document.getElementById("mail").value.trim();
+    const poste = document.getElementById("positionsSelector").value;
+    const desc = document.getElementById("desc").value.trim();
+    
+    // Collect experiences from read-only fields
+    const experiences = [];
+    const experienceFields = document.querySelectorAll('.experience-field');
+    
+    experienceFields.forEach(field => {
+        const paragraphs = field.querySelectorAll('p');
+        if (paragraphs.length >= 4) {
+            experiences.push({
+                title: paragraphs[0].textContent.replace('Title:', '').trim(),
+                desc: paragraphs[1].textContent.replace('Description:', '').trim(),
+                startDate: paragraphs[2].textContent.replace('Start:', '').trim(),
+                endDate: paragraphs[3].textContent.replace('End:', '').trim()
+            });
+        }
+    });
+    
+    addEmployee(name, firstname, email, poste, desc, experiences);
 }
 
-function addEmployee(name, firstname, email, poste, description) {
+function addEmployee(name, firstname, email, poste, description, experiences = []) {
     try {
-        let employeeAray = JSON.parse(localStorage.getItem("employees")) || [];
-        let id = generateId();
-        let newEmployee = {
+        let employeeArray = JSON.parse(localStorage.getItem("employees")) || [];
+        const id = generateId();
+        
+        // Get profile picture URL if available
+        const profilePicInput = document.getElementById("fileElem");
+        const profilePic = profilePicInput.files.length > 0 
+            ? URL.createObjectURL(profilePicInput.files[0])
+            : null;
+        
+        const newEmployee = {
             ID: id,
             nom: name,
             prenom: firstname,
             mail: email,
             poste: poste,
             desc: description,
-            expertise: []
-        }
-
-        employeeAray.push(newEmployee);
-        let updatedUsersString = JSON.stringify(employeeAray);
-        localStorage.setItem('employees', updatedUsersString);
-        console.log("data recovered successfully");
-        // updateExperiences(id)
-
+            expertise: experiences,
+            profilePic: profilePic
+        };
+        
+        employeeArray.push(newEmployee);
+        localStorage.setItem("employees", JSON.stringify(employeeArray));
+        
+        Toastify({
+            text: "Employee successfully added!",
+            duration: 3000,
+            close: true,
+            gravity: "top",
+            position: "center",
+            style: { background: "linear-gradient(to right,#00b09b,#96c93d)" }
+        }).showToast();
+        
+        fillTheUnassignedWorkersAuto();
+        closeFormHandler();
+        
     } catch (e) {
-        alert("failed to fetch data");
-        console.log(e.message);
+        console.error("Error adding employee:", e);
+        Toastify({
+            text: "Failed to save employee data",
+            style: { background: "red" }
+        }).showToast();
     }
 }
-function formDataRecovery() {
-    form.addEventListener("submit", (e) => {
-        e.preventDefault();
-        let name = document.getElementById("nom").value.trim();
-        let firstname = document.getElementById("pnom").value.trim();
-        let email = document.getElementById("mail").value.trim();
-        let poste = document.getElementById("positionsSelector").value.trim();
-        let desc = document.getElementById("desc").value.trim();
-        validateForm(name, firstname, email);
-        addEmployee(name, firstname, email, poste, desc);
-    })
+
+function generateId() {
+    return 'emp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 3);
 }
 
-addBtn.addEventListener('click', () => {
-
-    formDataRecovery();
-    console.log("clicked");
-
-})
-//used to load the list automatically from the localstorage
-let arr = JSON.parse(localStorage.getItem("employees")) || [];
-let fillTheUnassignedWorkersAuto = () => {
-    return (
-        employeeList.innerHTML = arr.map((element) => {
-            return `
+function fillTheUnassignedWorkersAuto() {
+    const arr = JSON.parse(localStorage.getItem("employees")) || [];
+    employeeList.innerHTML = arr.map((element) => {
+        return `
         <li draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
@@ -380,36 +336,117 @@ let fillTheUnassignedWorkersAuto = () => {
                 </div>
             </div>
         </li>
-    `;
-        }).join("")
-
-    )
+        `;
+    }).join('');
+        addEmployeeCardClickEvents();
 }
-fillTheUnassignedWorkersAuto();
 
-document.addEventListener('DOMContentLoaded', () => {
-    fillTheUnassignedWorkersAuto();
-})
+// Initialize when DOM is loaded
+document.addEventListener('DOMContentLoaded', initForm);
 
+// Drag and drop functionality (keep your existing implementation)
+function dragAndDrop() {
+    let selected;
+    for (let el of employeeListElements) {
+        el.addEventListener("dragstart", (e) => {
+            selected = e.target;
+            console.log(selected);
+        });
+        
+        receptionRoom.addEventListener("dragover", (e) => {
+            e.preventDefault();
+        });
 
+        receptionRoom.addEventListener("drop", (e) => {
+            receptionRoom.appendChild(selected);
+            selected = null;
+        });
+    }
+}
 
-
-// let confirmExpBtn = document.getElementById("confirmExperienceBtn");
-
-// confirmExpBtn.addEventListener('click', () => {
+function addEmployeeCardClickEvents() {
+    const employeeCards = document.querySelectorAll('.employee-card');
+    employeeCards.forEach(card => {
+        card.addEventListener('click', (e) => {
+            if (!e.target.closest('.employee-actions')) {
+                const employeeId = card.getAttribute('data-employee-id');
+                showEmployeeDetails(employeeId);
+            }
+        });
+    });
+}
+function showEmployeeDetails(employeeId) {
+    const employees = JSON.parse(localStorage.getItem("employees")) || [];
+    const employee = employees.find(emp => emp.ID === employeeId);
     
-// })
-// addMoreExperience.addEventListener('click', () => {
+    if (!employee) {
+        alert('Employee not found');
+        return;
+    }
+    
+    const experiencesHTML = employee.expertise && employee.expertise.length > 0 
+        ? employee.expertise.map((exp, index) => `
+            <div class="border rounded p-3 mb-3">
+                <h4 class="font-medium mb-2">Experience #${index + 1}</h4>
+                <p><strong>Title:</strong> ${exp.title || 'N/A'}</p>
+                <p><strong>Description:</strong> ${exp.desc || 'N/A'}</p>
+                <p><strong>Start Date:</strong> ${exp.startDate || 'N/A'}</p>
+                <p><strong>End Date:</strong> ${exp.endDate || 'N/A'}</p>
+            </div>
+        `).join('')
+        : '<p class="text-gray-500">No experiences added</p>';
+    
+    employeeDetailsContent.innerHTML = `
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+            <div class="md:col-span-1 flex flex-col items-center">
+                <img src="${employee.profilePic || 'assets/guy.png'}" 
+                     alt="${employee.nom} ${employee.prenom}" 
+                     class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 mb-4">
+                <h3 class="text-xl font-bold">${employee.nom} ${employee.prenom}</h3>
+                <p class="text-gray-600">${employee.poste}</p>
+            </div>
+            
+            <div class="md:col-span-2 space-y-4">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">Last Name</label>
+                        <p class="mt-1 p-2 bg-gray-50 rounded">${employee.nom}</p>
+                    </div>
+                    <div>
+                        <label class="block text-sm font-medium text-gray-700">First Name</label>
+                        <p class="mt-1 p-2 bg-gray-50 rounded">${employee.prenom}</p>
+                    </div>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Email</label>
+                    <p class="mt-1 p-2 bg-gray-50 rounded">${employee.mail}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Position</label>
+                    <p class="mt-1 p-2 bg-gray-50 rounded">${employee.poste}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Description</label>
+                    <p class="mt-1 p-2 bg-gray-50 rounded min-h-[80px]">${employee.desc || 'No description provided'}</p>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700 mb-2">Work Experiences</label>
+                    <div class="max-h-60 overflow-y-auto">
+                        ${experiencesHTML}
+                    </div>
+                </div>
+            </div>
+        </div>
+    `;
+    
+    employeeDetailsPopup.classList.remove("hidden");
+}
 
-
-// })
-
-
-let picUrl = document.getElementById("fileElem");
-let picSelector = document.getElementById("fileSlect");
-
-
-
-closeForm.addEventListener('click', () => {
-    addForm.classList.add("hidden");
-})
+// Close employee details popup
+function closeEmployeeDetails() {
+    employeeDetailsPopup.classList.add("hidden");
+}
