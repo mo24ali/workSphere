@@ -1,9 +1,8 @@
-let workspace = document.getElementById("workspace");
-let addEmployeeBtn = document.getElementById("add-employee-btn");
-let employeeListElements = document.querySelectorAll("li");
 let employeeList = document.getElementById("employee-list");
 //arrays to store the staff
 let employeeTab = JSON.parse(localStorage.getItem("employees")) || [];
+let addEmployeeBtn = document.getElementById("add-employee-btn");
+
 let receptArr = JSON.parse(localStorage.getItem("receptionists")) || [];
 let techniciancsArr = JSON.parse(localStorage.getItem("technicians")) || [];
 let secAgents = JSON.parse(localStorage.getItem("securityAgents")) || [];
@@ -12,8 +11,6 @@ let addForm = document.getElementById("add-employee-form");
 
 //form buttons
 let form = document.getElementById("form");
-let addBtn = document.getElementById("formBtn");
-let editBtn = document.getElementById("formBtnEdit");
 let closeForm = document.getElementById("closeForm");
 let dynamicDiv = document.getElementById("divForDynamicSection");
 let addMoreExperience = document.getElementById("moreExperienceBtn");
@@ -340,7 +337,10 @@ addForm.addEventListener('click', (e) => {
     }
 })
 
-document.addEventListener("DOMContentLoaded", initForm())
+document.addEventListener("DOMContentLoaded",()=>{
+     initForm() 
+    //  renderAllRooms()
+})
 
 //to review
 function removeEmployee(empId) {
@@ -374,15 +374,17 @@ function fillTheUnassignedWorkersAuto() {
                     <div id="position" class="text-sm text-gray-600 truncate" clickable="false">${element.poste}</div>
                 </div>
                 <div class="employee-actions flex gap-2" clickable="false">
-                    <button
+                    <div class="flex flex-col gap-2">
+                        <button
                         class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300"
                         onclick="removeEmployee('${element.ID}')">
                         Delete
                     </button>
                     <button
-                        class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
-                        Update
+                        class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">
+                        Edit
                     </button>
+                    </div>
                     <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${element.ID}')">
                         ...
                     </button>
@@ -394,7 +396,7 @@ function fillTheUnassignedWorkersAuto() {
 }
 
 // Initialize when DOM is loaded
-document.addEventListener('DOMContentLoaded', initForm);
+// document.addEventListener('DOMContentLoaded', initForm);
 
 // Drag and drop functionality (keep your existing implementation)
 function dragAndDrop() {
@@ -494,13 +496,6 @@ function closeEmployeeDetails() {
     employeeDetailsPopup.classList.add("hidden");
 }
 
-let peopleInArchive = document.getElementById("peopleInArchiveRoom");
-let peopleInStaffRoom = document.getElementById("peopleInStaffRoom");
-let peopleInReceptionRoom = document.getElementById("peopleInReceptionRoom");
-let peopleInSecurityRoom = document.getElementById("peopleInSecurityRoom");
-let peopleInServersRoom = document.getElementById("peopleInServersRoom");
-let peopleInCoferenceRoom = document.getElementById("peopleInConferenceRoom");
-
 //add employee to room popup
 let addEmployeePopup = document.getElementById("add-employee-popup");
 let closeAddEmployeePopup = document.getElementById("closeAddEmployeePopup");
@@ -523,18 +518,6 @@ let assignedSecurityRoom = document.getElementById("listInSecurityRoom");
 let assignedReceptionRoom = document.getElementById("listInReceptionRoom");
 let assignedStaffRoom = document.getElementById("listInStaffnRoom");
 let assignedArchiveRoom = document.getElementById("listInArchiveRoom");
-
-// function getIndexRoom(room){
-//     let count = 0;
-//     for(let key of Object.keys(roomRoles)){
-//         if(key == room){
-//             return count;
-//             // break;
-//         }else{
-//             count ++;
-//         }
-//     }
-// }
 
 let roomRoles = {
     "servers": ["technician", "manager", "cleaning"],
@@ -607,11 +590,40 @@ let roomNames = [
 
 ]
 
-let assigned
-function assignEmployeeToRoom(empId, room) {
+
+window.onload = () => {
+    fillTheUnassignedWorkersAuto();
+    renderAllRooms();
+}
+
+
+
+function removeEmployeeFromRoom(empId) {
     let employees = JSON.parse(localStorage.getItem("employees")) || [];
     let emp = employees.find(e => e.ID === empId);
+    emp.currentLocation = "unassigned";
+    localStorage.setItem("employees", JSON.stringify(employees));
+    Toastify(
+        {
+            text: "removed from room" ,
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: { background: "green"}
+        }
+    ).showToast();
+    fillTheUnassignedWorkersAuto();
+    renderAllRooms();
+}
+function validatePhone(phone) {
+    const phoneRegex = /^(?:\+212|0)([ \-]?\d){9}$/;
+    return phoneRegex.test(phone);
+}
 
+function assignEmployeeToRoom(empId, room) {
+    let employees = JSON.parse(localStorage.getItem("employees")) || [];
+    let emp = employees.find(e => e.ID === empId); 
     if (emp) {
         emp.currentLocation = room;
         localStorage.setItem("employees", JSON.stringify(employees));
@@ -626,65 +638,12 @@ function assignEmployeeToRoom(empId, room) {
         }).showToast();
 
         fillTheUnassignedWorkersAuto();
-        placeEmployeeInRoom(room, empId);
         renderAllRooms();
         document.getElementById("add-employee-popup").classList.add("hidden");
     }
 }
-window.onload = () => {
-    fillTheUnassignedWorkersAuto();
-    renderAllRooms();
-}
-
-
-
-function removeEmployeeFromRoom(empId) {
-    let employees = JSON.parse(localStorage.getItem("employees")) || [];
-    let emp = employees.find(e => e.ID === empId);
-    emp.currentLocation = "unassigned";
-    localStorage.setItem("employees", JSON.stringify(employees));
-    fillTheUnassignedWorkersAuto();
-    renderAllRooms();
-}
-//to review
-function previewProfilePicture(event) {
-    const file = event.target.files[0];
-    const preview = document.getElementById("profilePreview");
-
-    if (file) {
-        preview.src = URL.createObjectURL(file);
-        preview.classList.remove("hidden");
-    }
-}
-function validatePhone(phone) {
-    const phoneRegex = /^(?:\+212|0)([ \-]?\d){9}$/;
-    return phoneRegex.test(phone);
-}
-
-
-function placeEmployeeInRoom(roomId, empId) {
-    let lookedId = "people-" + roomId
-    let room = document.getElementById(lookedId);
-    console.log(room);
-    let addedEmployee;
-    try {
-        let arr = JSON.parse(localStorage.getItem("employees"));
-        addedEmployee = arr.find(emp => emp.ID === empId);
-        console.log(addedEmployee);
-
-    } catch (e) {
-        console.log("not found");
-
-    }
-    let miniProfile = document.createElement("div");
-    miniProfile.innerHTML = `
-        <img src="${addedEmployee.profilePicture}" alt="${addedEmployee.nom}>
-    `
-    room.appendChild(miniProfile);
-}
 function renderAllRooms() {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
-
     const rooms = [
         "conference-room",
         "reception-room",
@@ -693,39 +652,34 @@ function renderAllRooms() {
         "staff-room",
         "archive"
     ];
-
     rooms.forEach(room => {
         const roomContainer = document.getElementById(room);
-
         if (!roomContainer) console.log("failed to fetch room");
-
-        roomContainer.innerHTML = "";
-
         const assignedEmployees = employees.filter(e => e.currentLocation === room);
-
         if (assignedEmployees.length === 0) {
-            roomContainer.innerHTML = `
+            roomContainer.innerHTML += `
                 <p class="bold text-sm italic opacity-70">Empty zone</p>
             `;
         } else {
             assignedEmployees.forEach(emp => {
                 roomContainer.innerHTML += `
-                    <div class="employee-card flex justify-between items-center w-full bg-white border rounded-lg p-2 mb-1 shadow-sm">
+                    <div class="employee-card flex flex-col justify-between items-center w-20 bg-white border rounded-lg p-2 mb-1 shadow-sm">
                         <div class="flex items-center gap-2">
                             <img src="${emp.profilePicture}" alt="${emp.nom}"
                                 class="w-8 h-8 rounded-full object-cover">
                         </div>
-                        <button onclick="removeEmployeeFromRoom('${emp.ID}')"
+                        <div class="flex flex-row gap-2">
+                            <button onclick="removeEmployeeFromRoom('${emp.ID}')"
                             class="text-red-500 font-bold hover:text-red-700">X</button>
                             <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${emp.ID}')">
                         ...
                     </button>
+                        </div>
                     </div>
                 `;
 
             });
         }
-
         if (assignedEmployees.length === 0 && room !== "conference-room" && room !== "staff-room") {
             roomContainer.classList.add("bg-red-500/70");
         } else {
