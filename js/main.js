@@ -456,14 +456,6 @@ addEmployeePopup.addEventListener("click", (e) => {
         addEmployeePopup.classList.add("hidden");
     }
 })
-//assign each employee to a room
-let assignConferenceRoom = document.getElementById("listInConferenceRoom");
-let assignedServersRoom = document.getElementById("listInServersRoom");
-let assignedSecurityRoom = document.getElementById("listInSecurityRoom");
-let assignedReceptionRoom = document.getElementById("listInReceptionRoom");
-let assignedStaffRoom = document.getElementById("listInStaffnRoom");
-let assignedArchiveRoom = document.getElementById("listInArchiveRoom");
-
 let roomRoles = {
     "servers": ["technician", "manager", "cleaning"],
     "security-room": ["security", "cleaning", "manager"],
@@ -535,10 +527,6 @@ let roomNames = [
 
 ]
 let storeRoomsNumbers = JSON.stringify(roomNames);
-// localStorage.setItem(storeRoomsNumbers);
-
-
-//////////////////////////////////////////////////////////
 window.onload = () => {
     fillTheUnassignedWorkersAuto();
     renderAllRooms();
@@ -599,7 +587,6 @@ function assignEmployeeToRoom(empId, room) {
     const popup = document.getElementById("add-employee-popup");
     if (popup) popup.classList.add("hidden");
 }
-
 const roomLimits = {
     "conference-room": 4,
     "reception-room": 2,
