@@ -22,8 +22,6 @@ let addMoreExperience = document.getElementById("moreExperienceBtn");
 let experienceCount = 0;
 let currentEmpID = null;
 
-
-
 //popup variables 
 let employeeDetailsPopup = document.getElementById("employee-details-popup");
 let employeeDetailsContent = document.getElementById("employee-details-content");
@@ -35,25 +33,19 @@ function initForm() {
 }
 
 function setupEventListeners() {
-    // Open form
     addEmployeeBtn.addEventListener('click', openForm);
 
-    // Close form
     closeForm.addEventListener("click", closeFormHandler);
 
-    // Add experience button
     addMoreExperience.addEventListener("click", addExperienceField);
 
-    // Form submission
     form.addEventListener("submit", handleFormSubmit);
 
-    // File selector for profile picture
     document.getElementById("fileSlect").addEventListener("click", () => {
         document.getElementById("fileElem").click();
     });
     closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
 
-    // Close popup when clicking outside
     employeeDetailsPopup.addEventListener("click", (e) => {
         if (e.target === employeeDetailsPopup) {
             closeEmployeeDetails();
@@ -218,12 +210,6 @@ function validateForm() {
 
     // Experience validation
     const experienceFields = document.querySelectorAll('.experience-field');
-    // if (experienceFields.length === 0) {
-    //     alert('Please add at least one experience');
-    //     return false;
-    // }
-
-    // Check if all experiences are confirmed (converted to read-only)
     const unconfirmedExperiences = document.querySelectorAll('.experience-field:has(.confirm-exp-btn)');
     if (unconfirmedExperiences.length > 0) {
         alert('Please confirm all experiences before submitting');
@@ -276,51 +262,84 @@ function naiveId() {
     return id;
 }
 
-function addEmployee(name, firstname, email, poste, description, experiences = []) {
-    try {
-        let employeeArray = JSON.parse(localStorage.getItem("employees")) || [];
-        let id = naiveId();
+function addEmployee(e) {
+    // e.preventDefault(); // prevent form default submission
 
-        const profilePicInput = document.getElementById("fileElem");
-        const profilePic = profilePicInput.files.length > 0
-            ? URL.createObjectURL(profilePicInput.files[0])
-            : null;
+    const nom = document.getElementById("nom").value.trim();
+    const prenom = document.getElementById("pnom").value.trim();
+    const email = document.getElementById("mail").value.trim();
+    const phone = document.getElementById("phoneInput").value.trim();
+    const poste = document.getElementById("positionsSelector").value;
+    const description = document.getElementById("desc").value.trim();
+    const pictureInput = document.getElementById("profilePictureInput");
+    const experiencesContainer = document.getElementById("divForDynamicSection");
+
+    // Phone validation
+    if (!validatePhone(phone)) {
+        document.getElementById("phoneError").classList.remove("hidden");
+        return;
+    } else {
+        document.getElementById("phoneError").classList.add("hidden");
+    }
+
+    const pictureFile = pictureInput.files[0];
+
+    // Convert image to Base64 or use default placeholder
+    const reader = new FileReader();
+    reader.onload = function(event) {
+        const profileBase64 = event.target.result || "default.png";
+
+        let employees = JSON.parse(localStorage.getItem("employees")) || [];
+
+        // Gather experiences
+        const expFields = experiencesContainer.querySelectorAll(".experience-field");
+        const experiences = [];
+
+        expFields.forEach(exp => {
+            experiences.push({
+                title: exp.querySelector(".title-input").value.trim(),
+                desc: exp.querySelector(".desc-input").value.trim(),
+                startDate: exp.querySelector(".start-date-input").value,
+                endDate: exp.querySelector(".end-date-input").value
+            });
+        });
 
         const newEmployee = {
-            ID: id,
-            nom: name,
-            prenom: firstname,
-            mail: email,
-            poste: poste,
-            desc: description,
+            ID: Date.now().toString(),
+            nom,
+            prenom,
+            email,
+            phone,
+            poste,
+            description,
+            profilePicture: profileBase64,
             currentLocation: "unassigned",
-            expertise: experiences,
-            profilePic: profilePic
+            experiences
         };
 
-        employeeArray.push(newEmployee);
-        localStorage.setItem("employees", JSON.stringify(employeeArray));
+        employees.push(newEmployee);
+        localStorage.setItem("employees", JSON.stringify(employees));
 
-        Toastify({
-            text: "Employee successfully added!",
-            duration: 3000,
-            close: true,
-            gravity: "top",
-            position: "center",
-            style: { background: "linear-gradient(to right,#00b09b,#96c93d)" }
-        }).showToast();
-
+        // Refresh UI
         fillTheUnassignedWorkersAuto();
-        closeFormHandler();
+        renderAllRooms();
 
-    } catch (e) {
-        console.error("Error adding employee:", e);
-        Toastify({
-            text: "Failed to save employee data",
-            style: { background: "red" }
-        }).showToast();
+        // Close modal & reset form
+        document.getElementById("form").reset();
+        document.getElementById("profilePreview").classList.add("hidden");
+
+        document.getElementById("add-employee-form").classList.add("hidden");
+    };
+
+    if (pictureFile) {
+        reader.readAsDataURL(pictureFile); // convert file to Base64
+    } else {
+        // No picture chosen, process directly
+        reader.onload({ target: { result: "default.png" } });
     }
 }
+
+
 
 document.addEventListener("DOMContentLoaded", initForm())
 function removeEmployee(empId) {
@@ -474,12 +493,12 @@ function closeEmployeeDetails() {
 
 
 //assign each employee to a room
-let assignConferenceRoom = document.getElementById("listInConferenceRoom");
-let assignedServersRoom = document.getElementById("listInServersRoom");
-let assignedSecurityRoom = document.getElementById("listInSecurityRoom");
-let assignedReceptionRoom = document.getElementById("listInReceptionRoom");
-let assignedStaffRoom = document.getElementById("listInStaffnRoom");
-let assignedArchiveRoom = document.getElementById("listInArchiveRoom");
+// let assignConferenceRoom = document.getElementById("listInConferenceRoom");
+// let assignedServersRoom = document.getElementById("listInServersRoom");
+// let assignedSecurityRoom = document.getElementById("listInSecurityRoom");
+// let assignedReceptionRoom = document.getElementById("listInReceptionRoom");
+// let assignedStaffRoom = document.getElementById("listInStaffnRoom");
+// let assignedArchiveRoom = document.getElementById("listInArchiveRoom");
 
 
 let peopleInArchive = document.getElementById("peopleInArchiveRoom");
@@ -505,89 +524,41 @@ addEmployeePopup.addEventListener("click", (e) => {
     }
 })
 
-assignConferenceRoom.addEventListener("click", () => {
-    console.log("clicked assignConferenceRoom");
-    addEmployeePopup.classList.remove("hidden");
-    fillEmployeesToAddLIst();
-    console.log("fillAssignEmployee");
 
-})
-assignedServersRoom.addEventListener("click", () => {
-    console.log("clicked assignedServersRoom");
-    addEmployeePopup.classList.remove("hidden");
-    fillEmployeesToAddLIst();
-    console.log("fillAssignEmployee");
-})
-assignedSecurityRoom.addEventListener("click", () => {
-    console.log("clicked assignedSecurityRoom");
-    addEmployeePopup.classList.remove("hidden");
-    fillEmployeesToAddLIst();
-    console.log("fillAssignEmployee");
-})
-assignedReceptionRoom.addEventListener("click", () => {
-    console.log("clicked assignedReceptionRoom");
-    addEmployeePopup.classList.remove("hidden");
-    fillEmployeesToAddLIst();
-    console.log("fillAssignEmployee");
-})
-assignedStaffRoom.addEventListener("click", () => {
-    console.log("clicked assignedStaffRoom");
-    addEmployeePopup.classList.remove("hidden");
-    fillEmployeesToAddLIst();
-    console.log("fillAssignEmployee");
-})
-assignedArchiveRoom.addEventListener("click", () => {
-    console.log("clicked assignedArchiveRoom");
-    addEmployeePopup.classList.remove("hidden");
-    fillEmployeesToAddLIst();
-    console.log("fillAssignEmployee");
-})
+const roomRoles = {
+    "servers": ["technician", "manager", "cleaning"],
+    "security-room": ["security", "cleaning", "manager"],
+    "archive": ["manager"],
+    "staff-room": ["technician", "manager", "cleaning", "security", "receptionist"],
+    "conference-room": ["manager"],
+    "reception-room": ["receptionist", "manager"]
+};
+function fillEmployeesToAddLIst(room) {
+    const employees = JSON.parse(localStorage.getItem("employees")) || [];
+    const popup = document.getElementById("add-employee-popup");
+    const list = document.getElementById("add-employee-content");
 
-function fillEmployeesToAddLIst() {
+    const allowedRoles = roomRoles[room];
 
+    // Filter employees who have allowed roles and are unassigned
+    const eligible = employees.filter(emp =>
+        emp.currentLocation === "unassigned" && allowedRoles.includes(emp.poste)
+    );
 
-
-    const roomRoles = {
-        "servers": ["technician", "manager", "cleaning"],
-        "security-room": ["security", "cleaning"],
-        "archive": ["manager"],
-        "staff-room": ["technician", "manager", "cleaning", "security", "receptionist"],
-        "conference-room": ["manager"],
-        "reception-room": ["receptionist", "manager"]
-    };
-
-    let arr = JSON.parse(localStorage.getItem("employees"));
-    let arrRec = arr.filter(worker => worker.poste === "receptionist");
-    let arrIT = arr.filter(worker => worker.poste === "technician");
-    let arrManager = arr.filter(worker => worker.poste === "manager");
-    let arrSec = arr.filter(worker => worker.poste === "security");
-    let arrClean = arr.filter(worker => worker.poste === "cleaning");
-    console.log(arrManager);
-
-
-    listOfEmployeesToAdd.innerHTML = arr.map((elm) => {
-        return `
-        <li id="emp-toadd=${elm.ID}" draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50" clickable="true">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3" clickable="false">
-                <img src="assets/guy.png" alt="Employee" class="w-12 h-12 rounded-full">
-                <div class="emp-info flex-1 min-w-0" clickable="false">
-                    <div id="name" class="font-medium truncate" clickable="false">${elm.nom} ${elm.prenom}</div>
-                    <div id="position" class="text-sm text-gray-600 truncate" clickable="false">${elm.poste}</div>
-                </div>
-                <div class="employee-actions flex gap-2" clickable="false">
-                    <button
-                        class="px-3 py-1 text-xs border border-green-500 text-green-500 rounded hover:bg-green-500 hover:text-white transition duration-300">
-                        Add
-                    </button>
-                    <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${elm.ID}')">
-                        ...
-                    </button>
-                </div>
-            </div>
+    // Render the popup
+    list.innerHTML = eligible.map(emp => `
+        <li class="flex justify-between items-center border p-3 rounded mb-2">
+            <span>${emp.nom} ${emp.prenom} - ${emp.poste}</span>
+            <button class="bg-green-500 px-3 py-1 text-white rounded"
+                onclick="assignEmployeeToRoom('${emp.ID}', '${room}')">
+                Add
+            </button>
         </li>
-        `;
-    }).join('');
+    `).join('');
+
+    popup.classList.remove("hidden");
 }
+
 let roomNames = [
     {
         roomName: "Conference room",
@@ -618,10 +589,110 @@ let roomNames = [
     }
 
 ]
-function assignEmployee(roomId, empId) {
-    let arr = JSON.parse(localStorage.getItem("employees")) || [];
-    let room = JSON.parse(localStorage.getItem("rooms")) || [];
+
+let assigned
+function assignEmployeeToRoom(empId, room) {
+    let employees = JSON.parse(localStorage.getItem("employees")) || [];
+    let emp = employees.find(e => e.ID === empId);
+
+    if (emp) {
+        emp.currentLocation = room;
+        localStorage.setItem("employees", JSON.stringify(employees));
+
+        Toastify({
+            text: emp.nom + " moved to " + room,
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: { background: "linear-gradient(to right,#00b09b,#96c93d)" }
+        }).showToast();
+
+        fillTheUnassignedWorkersAuto();
+        placeEmployeeInRoom(room, empId);
+        document.getElementById("add-employee-popup").classList.add("hidden");
+    }
+}
+window.onload = () => {
+    fillTheUnassignedWorkersAuto();
+    renderAllRooms();
+}
 
 
+function renderAllRooms() {
+    const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
+    const rooms = [
+        "conference-room",
+        "reception-room",
+        "servers",
+        "security-room",
+        "staff-room",
+        "archive"
+    ];
+
+    rooms.forEach(room => {
+        // Div principale qui contient les employés dans cette salle
+        const roomContainer = document.getElementById(`peopleIn${room.replace(/-/g, '')}Room`);
+
+        if (!roomContainer) return;
+
+        // Vider la salle avant de la reremplir
+        roomContainer.innerHTML = "";
+
+        // Récupérer les employés assignés à cette salle
+        const assignedEmployees = employees.filter(e => e.currentLocation === room);
+
+        if (assignedEmployees.length === 0) {
+            // Affichage placeholder si vide
+            roomContainer.innerHTML = `
+                <p class="text-red-400 text-sm italic opacity-70">Empty zone</p>
+            `;
+        } else {
+            // Affichage des employés trouvés
+            assignedEmployees.forEach(emp => {
+                roomContainer.innerHTML += `
+    <div class="employee-card flex justify-between items-center w-full bg-white border rounded-lg p-2 mb-1 shadow-sm">
+        <div class="flex items-center gap-2">
+            <img src="${emp.profilePicture}" alt="${emp.nom}"
+                class="w-8 h-8 rounded-full object-cover">
+            <span>${emp.nom} - <b>${emp.poste}</b></span>
+        </div>
+        <button onclick="removeEmployeeFromRoom('${emp.ID}')"
+            class="text-red-500 font-bold hover:text-red-700">X</button>
+    </div>
+`;
+
+            });
+        }
+
+        // Mise en évidence des salles vides obligatoires
+        if (assignedEmployees.length === 0 && room !== "conference-room" && room !== "staff-room") {
+            roomContainer.classList.add("bg-red-100");
+        } else {
+            roomContainer.classList.remove("bg-red-100");
+        }
+    });
+}
+function removeEmployeeFromRoom(empId) {
+    let employees = JSON.parse(localStorage.getItem("employees")) || [];
+    let emp = employees.find(e => e.ID === empId);
+    emp.currentLocation = "unassigned";
+    localStorage.setItem("employees", JSON.stringify(employees));
+    fillTheUnassignedWorkersAuto();
+    renderAllRooms();
+}
+//to review
+function previewProfilePicture(event) {
+    const file = event.target.files[0];
+    const preview = document.getElementById("profilePreview");
+
+    if (file) {
+        preview.src = URL.createObjectURL(file);
+        preview.classList.remove("hidden");
+    }
+}
+function validatePhone(phone) {
+    const phoneRegex = /^(?:\+212|0)([ \-]?\d){9}$/;
+    return phoneRegex.test(phone);
 }

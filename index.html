@@ -9,9 +9,8 @@
     <link rel="stylesheet" type="text/css" href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css">
     <title>Document</title>
 </head>
-<!-- to use later on grid grid-cols-7 grid-rows-3  -->
 
-<body class="container mx-auto justify-center bg-black/20 ">
+<body class="container mx-auto justify-center bg-black/20">
     <header class="bg-gray-800 text-white p-4 shadow-md">
         <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <div id="logo" class="text-xl font-bold">diOffice</div>
@@ -21,8 +20,9 @@
             </div>
         </div>
     </header>
-    <main class="flex gap-4 mt-10 space-x-10">
-        <aside class="w-full lg:w-80 bg-white rounded-lg shadow-md p-4">
+
+    <main class="flex flex-col lg:flex-row gap-4 mt-4 lg:mt-10 px-4 lg:px-0 lg:space-x-10">
+        <div class="order-2 lg:order-1 w-full lg:w-80 bg-white rounded-lg shadow-md p-4">
             <h2 class="text-center font-bold mb-1 ui-sans-serif">List of unassigned workers</h2>
             <button id="add-employee-btn"
                 class="w-full rounded-lg bg-blue-500 px-4 py-3 text-white font-medium hover:bg-blue-600 transition duration-300 mb-4">
@@ -30,229 +30,219 @@
             </button>
 
             <div class="scrollable-sidebar">
-                <ul id="employee-list" class="space-y-3 overflow-scroll h-100">
-
+                <ul id="employee-list" class="space-y-3 overflow-auto max-h-96">
                     <!-- filled dynamically in JS -->
-
                 </ul>
             </div>
-        </aside>
-        <div id="workspace" class="w-280 h-160 bg-black/10 bg-[url('assets/workspace_area.jpg')] border-b ">
-            <div id="upper-rooms" class="flex">
-                <div id="conference-room"
-                    class="flex flex-col justify-center items-center dragging-area hover:bg-blue-500/50 w-105 h-55 border-b transform duration-300">
-                    <!-- <p class="text-black mb-2">Conference room</p> -->
-                    <div id="peopleInConferenceRoom"></div>
-                     
-                    <button id="listInConferenceRoom"
-                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
-                        title="See who is allowed in this room">
-                        <i class="fa-solid fa-add"></i>
-                    </button>
-
-                </div>
-
-                <div class=" w-49 h-55 justify-center items-center ">
-                </div>
-                <div id="servers"
-                    class=" flex flex-col justify-center items-center text-center dragging-area hover:bg-green-500/50 w-61 h-55 justify-center items-center border-b transform duration-300">
-                    <!-- <p class="text-center text-black">servers</p> -->
-                    <div id="peopleInServersRoom"></div>
-
-                    <button id="listInServersRoom"
-                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
-                        title="See who is allowed in this room">
-                        <i class="fa-solid fa-add"></i>
-
-                    </button>
-                </div>
-                <div id="security-room"
-                    class="flex flex-col dragging-area hover:bg-red-500/50 w-62 h-55 justify-center items-center border-b transform duration-300">
-                    <!-- <p class="text-center text-black">security-room</p> -->
-                    <div id="peopleInSecurityRoom"></div>
-                    <button id="listInSecurityRoom"
-                        class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                        title="See who is allowed in this room">
-                        <i class="fa-solid fa-add"></i>
-                    </button>
-                </div>
-            </div>
-            <div id="bottom-rooms" class="flex">
-                <div id="reception-room"
-                    class="flex flex-col dragging-area hover:bg-red-500/50 w-105 h-105 justify-center items-center border-b transform duration-300">
-                    <!-- <p class="text-black text-center">Hall and reception</p> -->
-                    <div id="peopleInReceptionRoom"></div>
-                    <button id="listInReceptionRoom"
-                        class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                        title="See who is allowed in this room">
-                        <i class="fa-solid fa-add"></i>
-                    </button>
-
-
-                </div>
-                <div id="blank-hall" class=" w-50 h-105 justify-center items-center border-b">
-                </div>
-                <div id="twin-rooms" class="flex grid grid-cols-2 grid-rows-2">
-                    <div class=" w-60 h-50">
-                    </div>
-                    <div class=" w-60 h-50">
-                    </div>
-                    <div id="staff-room"
-                        class="flex flex-col dragging-area hover:bg-green-500/50 w-60 h-50 justify-center items-center border-b transform duration-300">
-                        <!-- <p class="text-black text-center">staff-room</p> -->
-                        <div id="peopleInStaffRoom"></div>
-
-                        <button id="listInStaffnRoom"
-                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                            title="See who is allowed in this room">
-                            <i class="fa-solid fa-add"></i>
-                        </button>
-
-                    </div>
-                    <div id="archive"
-                        class="flex flex-col dragging-area hover:bg-red-500/50 w-61 h-50 justify-center items-center border-b transform duration-300">
-                        <!-- <p class="text-black text-center">archive</p> -->
-                        <div id="peopleInArchiveRoom"></div>
-                        <button id="listInArchiveRoom"
-                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                            title="See who is allowed in this room">
-                            <i class="fa-solid fa-add"></i>
-                        </button>
-
-                    </div>
-                </div>
-            </div>
         </div>
-        <div id="add-employee-form"
-            class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50  hidden overflow-scroll ">
-            <!-- dynamic form modal to add employees to the list of employees -->
-            <form id="form" class="flex flex-col w-full max-w-md bg-white rounded-xl p-6 border shadow-xl mx-4 mt-auto">
-                <div class="overflow-y-auto flex-1 space-y-4 pr-2">
-                    <div id="form-header" class="flex justify-between items-center mb-6">
-                        <h2 id="title" class="text-xl font-semibold">Add Employee</h2>
-                        <button id="closeForm" type="button"
-                            class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
-                            X
+
+        <div class="order-1 lg:order-2 flex-1 min-w-0">
+            <div id="workspace" class="w-280 h-160 bg-black/10 bg-[url('assets/workspace_area.jpg')] border-b ">
+                <div id="upper-rooms" class="flex">
+                    <div id="conference-room"
+                        class="flex flex-col justify-center items-center dragging-area hover:bg-blue-500/50 w-105 h-55 border-b transform duration-300">
+                        <!-- <p class="text-black mb-2">Conference room</p> -->
+                        <div id="peopleInConferenceRoom"></div>
+                        <button id="listInConferenceRoom"
+                            class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
+                            title="See who is allowed in this room">
+                            <i class="fa-solid fa-add"></i>
                         </button>
                     </div>
-                    <div class="space-y-4">
-                        <div id="profil-pic-div" class="flex flex-col justify-center items-center">
-                            <label for="pic" class="block mb-1">Photo de profil :</label>
-                            <div id="fileSlect"
-                                class="w-20 h-20 rounded-full bg-gray-500 flex flex-col justify-center items-center hover:bg-gray-700 transform duration-300">
-                                <input type="file" id="fileElem" accept="image/*" style="display: none;">
-                                <i class="fa-solid fa-camera w-10 h-10 mt-5"></i>
-                            </div>
-                        </div>
-                        <div>
-                            <label for="nom" class="block mb-1">Nom :</label>
-                            <input type="text" id="nom" placeholder="Nom" class="w-full border p-2 rounded" required>
-                        </div>
 
-                        <div>
-                            <label for="pnom" class="block mb-1">Prenom :</label>
-                            <input type="text" id="pnom" placeholder="Prenom" class="w-full border p-2 rounded"
-                                required>
-                        </div>
-                        <div>
-                            <label for="mail" class="block mb-1">Email :</label>
-                            <input type="email" id="mail" placeholder="Email" class="w-full border p-2 rounded"
-                                required>
-                        </div>
+                    <div class=" w-49 h-55 justify-center items-center ">
+                    </div>
+                    <div id="servers"
+                        class=" flex flex-col justify-center items-center text-center dragging-area hover:bg-green-500/50 w-61 h-55 justify-center items-center border-b transform duration-300">
+                        <!-- <p class="text-center text-black">servers</p> -->
+                        <div id="peopleInServersRoom"></div>
+                        <button id="listInServersRoom"
+                            class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
+                            title="See who is allowed in this room">
+                            <i class="fa-solid fa-add"></i>
 
-
-                        <div>
-                            <label for="positionsSelector" class="block mb-1">Poste :</label>
-                            <select id="positionsSelector" class="w-full border p-2 rounded">
-                                <option value="" selected>Position</option>
-                                <option value="security">Security Agent</option>
-                                <option value="receptionist">Receptionist</option>
-                                <option value="technician">IT guy</option>
-                                <option value="cleaning">Cleaning</option>
-                                <option value="manager">Manager</option>
-                                <option value="other">Other</option>
-                            </select>
+                        </button>
+                    </div>
+                    <div id="security-room"
+                        class="flex flex-col dragging-area hover:bg-red-500/50 w-62 h-55 justify-center items-center border-b transform duration-300">
+                        <!-- <p class="text-center text-black">security-room</p> -->
+                        <div id="peopleInSecurityRoom"></div>
+                        <button id="listInSecurityRoom"
+                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                            title="See who is allowed in this room">
+                            <i class="fa-solid fa-add"></i>
+                        </button>
+                    </div>
+                </div>
+                <div id="bottom-rooms" class="flex">
+                    <div id="reception-room"
+                        class="flex flex-col dragging-area hover:bg-red-500/50 w-105 h-105 justify-center items-center border-b transform duration-300">
+                        <!-- <p class="text-black text-center">Hall and reception</p> -->
+                        <div id="peopleInReceptionRoom"></div>
+                        <button id="listInReceptionRoom"
+                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                            title="See who is allowed in this room">
+                            <i class="fa-solid fa-add"></i>
+                        </button>
+                    </div>
+                    <div id="blank-hall" class=" w-50 h-105 justify-center items-center border-b">
+                    </div>
+                    <div id="twin-rooms" class="flex grid grid-cols-2 grid-rows-2">
+                        <div class=" w-60 h-50">
                         </div>
-
-                        <div>
-                            <label for="desc" class="block mb-1">Description</label>
-                            <textarea name="description" id="desc" class="w-full border rounded p-2"
-                                rows="3"></textarea>
+                        <div class=" w-60 h-50">
                         </div>
+                        <div id="staff-room"
+                            class="flex flex-col dragging-area hover:bg-green-500/50 w-60 h-50 justify-center items-center border-b transform duration-300">
+                            <!-- <p class="text-black text-center">staff-room</p> -->
+                            <div id="peopleInStaffRoom"></div>
 
-                        <div class="flex items-center justify-between">
-                            <label for="experience" class="block">Experience :</label>
-                            <button id="moreExperienceBtn" type="button"
-                                class="bg-blue-500 rounded hover:bg-blue-600 text-white transform duration-300 p-2 w-8 h-8 flex items-center justify-center"
-                                onclick="addDynamicField()">
-                                +
+                            <button id="listInStaffnRoom"
+                                class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                                title="See who is allowed in this room">
+                                <i class="fa-solid fa-add"></i>
                             </button>
-                        </div>
 
-                        <div id="divForDynamicSection">
-                            <!-- need to make all the modal scrollable not only the experience section -->
-                            <!-- Dynamic sections will be added here -->
                         </div>
+                        <div id="archive"
+                            class="flex flex-col dragging-area hover:bg-red-500/50 w-61 h-50 justify-center items-center border-b transform duration-300">
+                            <!-- <p class="text-black text-center">archive</p> -->
+                            <div id="peopleInArchiveRoom"></div>
+                            <button id="listInArchiveRoom"
+                                class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
+                                title="See who is allowed in this room">
+                                <i class="fa-solid fa-add"></i>
+                            </button>
 
-                        <button id="formBtn" type="submit"
-                            class="flex-1 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition w-full">
-                            ADD
-                        </button>
+                        </div>
                     </div>
                 </div>
-            </form>
-            <!-- ///////////////////////////////////////////////////////////// -->
-        </div>
-        <div id="addWorkerOnTheFloor" class="justify-center items-center">
-            <ul>
-
-            </ul>
-        </div>
-        <!-- Employee Details Popup -->
-        <div id="employee-details-popup"
-            class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 hidden">
-            <div class="bg-white rounded-xl p-6 border shadow-xl mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold">Employee Details</h2>
-                    <button id="closeDetailsPopup" type="button"
-                        class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
-                        X
-                    </button>
-                </div>
-                <div id="employee-details-content">
-                    <!-- Content will be filled dynamically -->
-                </div>
-            </div>
-        </div>
-        <div id="add-employee-popup"
-            class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-40 hidden">
-            <div class="bg-white rounded-xl p-6 border shadow-xl mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-                <div class="flex justify-between items-center mb-6">
-                    <h2 class="text-xl font-semibold">Add Employee to the room</h2>
-                    <button id="closeAddEmployeePopup" type="button"
-                        class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
-                        X
-                    </button>
-                </div>
-                <ul id="add-employee-content">
-                    <!-- Content will be filled dynamically -->
-                </ul>
             </div>
         </div>
     </main>
 
-    <!-- ///////////////////////////////////////////////////////////// -->
+    <div id="add-employee-form"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 hidden overflow-scroll">
+        <form id="form" class="flex flex-col w-full max-w-md bg-white rounded-xl p-6 border shadow-xl mx-4 mt-auto">
+            <div class="overflow-y-auto flex-1 space-y-4 pr-2">
+                <div id="form-header" class="flex justify-between items-center mb-6">
+                    <h2 id="title" class="text-xl font-semibold">Add Employee</h2>
+                    <button id="closeForm" type="button"
+                        class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
+                        X
+                    </button>
+                </div>
+                <div class="space-y-4">
+                    <div id="profil-pic-div" class="flex flex-col justify-center items-center">
+                        <label for="pic" class="block mb-1">Photo de profil :</label>
+                        <div id="fileSlect"
+                            class="w-20 h-20 rounded-full bg-gray-500 flex flex-col justify-center items-center hover:bg-gray-700 transform duration-300">
+                            <input type="file" id="profilePictureInput" accept="image/*" class="border p-2 rounded"
+                                onchange="previewProfilePicture(event)">
+                            <img id="profilePreview" class="w-20 h-20 rounded-full object-cover mt-2 hidden">
+                            <i class="fa-solid fa-camera w-10 h-10 mt-5"></i>
+                        </div>
+                    </div>
+                    <div>
+                        <label for="nom" class="block mb-1">Nom :</label>
+                        <input type="text" id="nom" placeholder="Nom" class="w-full border p-2 rounded" required>
+                    </div>
 
+                    <div>
+                        <label for="pnom" class="block mb-1">Prenom :</label>
+                        <input type="text" id="pnom" placeholder="Prenom" class="w-full border p-2 rounded" required>
+                    </div>
+                    <div>
+                        <label for="mail" class="block mb-1">Email :</label>
+                        <input type="email" id="mail" placeholder="Email" class="w-full border p-2 rounded" required>
+                    </div>
+                    <div>
+                        <input type="text" id="phoneInput" placeholder="Phone number" class="border p-2 rounded mt-2">
+                        <p id="phoneError" class="text-red-500 text-sm hidden">Invalid phone number</p>
+                    </div>
 
+                    <div>
+                        <label for="positionsSelector" class="block mb-1">Poste :</label>
+                        <select id="positionsSelector" class="w-full border p-2 rounded">
+                            <option value="" selected>Position</option>
+                            <option value="security">Security Agent</option>
+                            <option value="receptionist">Receptionist</option>
+                            <option value="technician">IT guy</option>
+                            <option value="cleaning">Cleaning</option>
+                            <option value="manager">Manager</option>
+                            <option value="other">Other</option>
+                        </select>
+                    </div>
 
-    <!-- //////////////////////////////////////////////////////////// -->
-    <footer>
+                    <div>
+                        <label for="desc" class="block mb-1">Description</label>
+                        <textarea name="description" id="desc" class="w-full border rounded p-2" rows="3"></textarea>
+                    </div>
 
-    </footer>
+                    <div class="flex items-center justify-between">
+                        <label for="experience" class="block">Experience :</label>
+                        <button id="moreExperienceBtn" type="button"
+                            class="bg-blue-500 rounded hover:bg-blue-600 text-white transform duration-300 p-2 w-8 h-8 flex items-center justify-center"
+                            onclick="addDynamicField()">
+                            +
+                        </button>
+                    </div>
+
+                    <div id="divForDynamicSection">
+                        <!-- need to make all the modal scrollable not only the experience section -->
+                        <!-- Dynamic sections will be added here -->
+                    </div>
+
+                    <button id="formBtn" type="submit"
+                        class="flex-1 rounded bg-blue-500 px-4 py-2 text-white hover:bg-blue-600 transition w-full">
+                        ADD
+                    </button>
+                </div>
+            </div>
+        </form>
+    </div>
+
+    <div id="addWorkerOnTheFloor" class="justify-center items-center">
+        <ul></ul>
+    </div>
+    <!-- POPUPS -->
+    <!-- Employee Details Popup -->
+    <div id="employee-details-popup"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 hidden">
+        <div class="bg-white rounded-xl p-6 border shadow-xl mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold">Employee Details</h2>
+                <button id="closeDetailsPopup" type="button"
+                    class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
+                    X
+                </button>
+            </div>
+            <div id="employee-details-content">
+                <!-- Content will be filled dynamically -->
+            </div>
+        </div>
+    </div>
+
+    <div id="add-employee-popup"
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-40 hidden">
+        <div class="bg-white rounded-xl p-6 border shadow-xl mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-6">
+                <h2 class="text-xl font-semibold">Add Employee to the room</h2>
+                <button id="closeAddEmployeePopup" type="button"
+                    class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
+                    X
+                </button>
+            </div>
+            <ul id="add-employee-content">
+                <!-- Content will be filled dynamically -->
+            </ul>
+        </div>
+    </div>
+
+    <footer></footer>
+
     <script src="js/main.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
-
-
 </body>
 
 </html>
