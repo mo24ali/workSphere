@@ -41,9 +41,9 @@ function setupEventListeners() {
 
     form.addEventListener("submit", handleFormSubmit);
 
-    document.getElementById("fileSlect").addEventListener("click", () => {
-        document.getElementById("fileElem").click();
-    });
+    // document.getElementById("fileSlect").addEventListener("click", () => {
+    //     document.getElementById("fileElem").click();
+    // });
     closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
 
     employeeDetailsPopup.addEventListener("click", (e) => {
@@ -262,19 +262,29 @@ function naiveId() {
     return id;
 }
 
-function addEmployee(e) {
-    // e.preventDefault(); // prevent form default submission
 
+document.getElementById("profilePictureInput").addEventListener("input", previewProfilePictureURL);
+function previewProfilePictureURL() {
+    const url = document.getElementById("profilePictureInput").value.trim();
+    const preview = document.getElementById("profilePreview");
+
+    if (url && url.startsWith("http")) {
+        preview.src = url;
+        preview.classList.remove("hidden");
+    } else {
+        preview.classList.add("hidden");
+    }
+}
+
+function addEmployee() {
     const nom = document.getElementById("nom").value.trim();
     const prenom = document.getElementById("pnom").value.trim();
     const email = document.getElementById("mail").value.trim();
     const phone = document.getElementById("phoneInput").value.trim();
     const poste = document.getElementById("positionsSelector").value;
     const description = document.getElementById("desc").value.trim();
-    const pictureInput = document.getElementById("profilePictureInput");
-    const experiencesContainer = document.getElementById("divForDynamicSection");
+    const profileUrl = document.getElementById("profilePictureInput").value.trim();
 
-    // Phone validation
     if (!validatePhone(phone)) {
         document.getElementById("phoneError").classList.remove("hidden");
         return;
@@ -282,66 +292,57 @@ function addEmployee(e) {
         document.getElementById("phoneError").classList.add("hidden");
     }
 
-    const pictureFile = pictureInput.files[0];
+    // Collect confirmed experiences
+    const experiences = [];
+    const experienceFields = document.querySelectorAll('.experience-field');
 
-    // Convert image to Base64 or use default placeholder
-    const reader = new FileReader();
-    reader.onload = function(event) {
-        const profileBase64 = event.target.result || "default.png";
-
-        let employees = JSON.parse(localStorage.getItem("employees")) || [];
-
-        // Gather experiences
-        const expFields = experiencesContainer.querySelectorAll(".experience-field");
-        const experiences = [];
-
-        expFields.forEach(exp => {
+    experienceFields.forEach(field => {
+        const paragraphs = field.querySelectorAll('p');
+        if (paragraphs.length >= 4) {
             experiences.push({
-                title: exp.querySelector(".title-input").value.trim(),
-                desc: exp.querySelector(".desc-input").value.trim(),
-                startDate: exp.querySelector(".start-date-input").value,
-                endDate: exp.querySelector(".end-date-input").value
+                title: paragraphs[0].textContent.replace('Title:', '').trim(),
+                desc: paragraphs[1].textContent.replace('Description:', '').trim(),
+                startDate: paragraphs[2].textContent.replace('Start:', '').trim(),
+                endDate: paragraphs[3].textContent.replace('End:', '').trim()
             });
-        });
+        }
+    });
 
-        const newEmployee = {
-            ID: Date.now().toString(),
-            nom,
-            prenom,
-            email,
-            phone,
-            poste,
-            description,
-            profilePicture: profileBase64,
-            currentLocation: "unassigned",
-            experiences
-        };
+    const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
-        employees.push(newEmployee);
-        localStorage.setItem("employees", JSON.stringify(employees));
-
-        // Refresh UI
-        fillTheUnassignedWorkersAuto();
-        renderAllRooms();
-
-        // Close modal & reset form
-        document.getElementById("form").reset();
-        document.getElementById("profilePreview").classList.add("hidden");
-
-        document.getElementById("add-employee-form").classList.add("hidden");
+    const newEmployee = {
+        ID: naiveId(),
+        nom,
+        prenom,
+        email,
+        phone,
+        poste,
+        description,
+        profilePicture: profileUrl || "assets/guy.png",
+        currentLocation: "unassigned",
+        experiences
     };
 
-    if (pictureFile) {
-        reader.readAsDataURL(pictureFile); // convert file to Base64
-    } else {
-        // No picture chosen, process directly
-        reader.onload({ target: { result: "default.png" } });
-    }
+    employees.push(newEmployee);
+    localStorage.setItem("employees", JSON.stringify(employees));
+
+    fillTheUnassignedWorkersAuto();
+    // renderAllRooms();
+    form.reset();
+    document.getElementById("profilePreview").classList.add("hidden");
+    addForm.classList.add("hidden");
 }
 
 
+addForm.addEventListener('click', (e) => {
+    if (e.target == addForm) {
+        addForm.classList.add("hidden");
+    }
+})
 
 document.addEventListener("DOMContentLoaded", initForm())
+
+//to review
 function removeEmployee(empId) {
     try {
         let employeeArray = JSON.parse(localStorage.getItem("employees")) || [];
@@ -359,9 +360,7 @@ function removeEmployee(empId) {
 
 }
 
-// function generateId() {
-//     return 'emp_' + Date.now() + '_' + Math.random().toString(36).substr(2, 3);
-// }
+
 
 function fillTheUnassignedWorkersAuto() {
     const arr = JSON.parse(localStorage.getItem("employees")) || [];
@@ -369,7 +368,7 @@ function fillTheUnassignedWorkersAuto() {
         return `
         <li id="emp=${element.ID}" draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50" clickable="true">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3" clickable="false">
-                <img src="" alt="Employee" class="w-12 h-12 rounded-full">
+                <img src="${element.profilePicture}" alt="Employee" class="w-12 h-12 rounded-full">
                 <div class="emp-info flex-1 min-w-0" clickable="false">
                     <div id="name" class="font-medium truncate" clickable="false">${element.nom} ${element.prenom}</div>
                     <div id="position" class="text-sm text-gray-600 truncate" clickable="false">${element.poste}</div>
@@ -420,10 +419,12 @@ function dragAndDrop() {
 
 function showEmployeeDetails(employeeId) {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
-    const employee = employees.find(emp => emp.ID === employeeId);
 
-    const experiencesHTML = employee.expertise && employee.expertise.length > 0
-        ? employee.expertise.map((exp, index) => `
+    const employee = employees.find(emp => emp.ID === employeeId);
+    console.log(employee);
+
+    const experiencesHTML = employee.experiences && employee.experiences.length > 0
+        ? employee.experiences.map((exp, index) => `
             <div class="border rounded p-3 mb-3">
                 <h4 class="font-medium mb-2">Experience #${index + 1}</h4>
                 <p><strong>Title:</strong> ${exp.title || 'N/A'}</p>
@@ -437,7 +438,7 @@ function showEmployeeDetails(employeeId) {
     employeeDetailsContent.innerHTML = `
         <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
             <div class="md:col-span-1 flex flex-col items-center">
-                <img src="${employee.profilePic || 'assets/guy.png'}" 
+                <img src="${employee.profilePicture || 'assets/guy.png'}" 
                      alt="${employee.nom} ${employee.prenom}" 
                      class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 mb-4">
                 <h3 class="text-xl font-bold">${employee.nom} ${employee.prenom}</h3>
@@ -458,17 +459,20 @@ function showEmployeeDetails(employeeId) {
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <p class="mt-1 p-2 bg-gray-50 rounded">${employee.mail}</p>
+                    <p class="mt-1 p-2 bg-gray-50 rounded">${employee.email}</p>
                 </div>
                 
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Position</label>
                     <p class="mt-1 p-2 bg-gray-50 rounded">${employee.poste}</p>
                 </div>
-                
+                <div>
+                    <label class="block text-sm font-medium text-gray-700">Position</label>
+                    <p class="mt-1 p-2 bg-gray-50 rounded min-h-[40px]">${employee.currentLocation || 'No location provided'}</p>
+                </div>
                 <div>
                     <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <p class="mt-1 p-2 bg-gray-50 rounded min-h-[80px]">${employee.desc || 'No description provided'}</p>
+                    <p class="mt-1 p-2 bg-gray-50 rounded min-h-[80px]">${employee.description || 'No description provided'}</p>
                 </div>
                 
                 <div>
@@ -490,17 +494,6 @@ function closeEmployeeDetails() {
     employeeDetailsPopup.classList.add("hidden");
 }
 
-
-
-//assign each employee to a room
-// let assignConferenceRoom = document.getElementById("listInConferenceRoom");
-// let assignedServersRoom = document.getElementById("listInServersRoom");
-// let assignedSecurityRoom = document.getElementById("listInSecurityRoom");
-// let assignedReceptionRoom = document.getElementById("listInReceptionRoom");
-// let assignedStaffRoom = document.getElementById("listInStaffnRoom");
-// let assignedArchiveRoom = document.getElementById("listInArchiveRoom");
-
-
 let peopleInArchive = document.getElementById("peopleInArchiveRoom");
 let peopleInStaffRoom = document.getElementById("peopleInStaffRoom");
 let peopleInReceptionRoom = document.getElementById("peopleInReceptionRoom");
@@ -513,7 +506,6 @@ let addEmployeePopup = document.getElementById("add-employee-popup");
 let closeAddEmployeePopup = document.getElementById("closeAddEmployeePopup");
 let listOfEmployeesToAdd = document.getElementById("add-employee-content");
 
-
 closeAddEmployeePopup.addEventListener("click", () => {
     addEmployeePopup.classList.add("hidden");
 
@@ -524,8 +516,27 @@ addEmployeePopup.addEventListener("click", (e) => {
     }
 })
 
+//assign each employee to a room
+let assignConferenceRoom = document.getElementById("listInConferenceRoom");
+let assignedServersRoom = document.getElementById("listInServersRoom");
+let assignedSecurityRoom = document.getElementById("listInSecurityRoom");
+let assignedReceptionRoom = document.getElementById("listInReceptionRoom");
+let assignedStaffRoom = document.getElementById("listInStaffnRoom");
+let assignedArchiveRoom = document.getElementById("listInArchiveRoom");
 
-const roomRoles = {
+// function getIndexRoom(room){
+//     let count = 0;
+//     for(let key of Object.keys(roomRoles)){
+//         if(key == room){
+//             return count;
+//             // break;
+//         }else{
+//             count ++;
+//         }
+//     }
+// }
+
+let roomRoles = {
     "servers": ["technician", "manager", "cleaning"],
     "security-room": ["security", "cleaning", "manager"],
     "archive": ["manager"],
@@ -534,20 +545,26 @@ const roomRoles = {
     "reception-room": ["receptionist", "manager"]
 };
 function fillEmployeesToAddLIst(room) {
+    console.log(room);
+
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const popup = document.getElementById("add-employee-popup");
-    const list = document.getElementById("add-employee-content");
+    // const list = document.getElementById("add-employee-content");
+    // console.log(getIndexRoom(room));
+    console.log(roomRoles[room]);
 
-    const allowedRoles = roomRoles[room];
+    let allowedRoles = [];
+    allowedRoles = roomRoles[room];
+    console.log(allowedRoles);
 
-    // Filter employees who have allowed roles and are unassigned
     const eligible = employees.filter(emp =>
         emp.currentLocation === "unassigned" && allowedRoles.includes(emp.poste)
     );
+    console.log(eligible);
 
-    // Render the popup
-    list.innerHTML = eligible.map(emp => `
+    listOfEmployeesToAdd.innerHTML = eligible.map(emp => `
         <li class="flex justify-between items-center border p-3 rounded mb-2">
+            <img src="${emp.profilePicture}" class="rounded-full w-15 h-15">
             <span>${emp.nom} ${emp.prenom} - ${emp.poste}</span>
             <button class="bg-green-500 px-3 py-1 text-white rounded"
                 onclick="assignEmployeeToRoom('${emp.ID}', '${room}')">
@@ -610,6 +627,7 @@ function assignEmployeeToRoom(empId, room) {
 
         fillTheUnassignedWorkersAuto();
         placeEmployeeInRoom(room, empId);
+        renderAllRooms();
         document.getElementById("add-employee-popup").classList.add("hidden");
     }
 }
@@ -619,61 +637,7 @@ window.onload = () => {
 }
 
 
-function renderAllRooms() {
-    const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
-    const rooms = [
-        "conference-room",
-        "reception-room",
-        "servers",
-        "security-room",
-        "staff-room",
-        "archive"
-    ];
-
-    rooms.forEach(room => {
-        // Div principale qui contient les employés dans cette salle
-        const roomContainer = document.getElementById(`peopleIn${room.replace(/-/g, '')}Room`);
-
-        if (!roomContainer) return;
-
-        // Vider la salle avant de la reremplir
-        roomContainer.innerHTML = "";
-
-        // Récupérer les employés assignés à cette salle
-        const assignedEmployees = employees.filter(e => e.currentLocation === room);
-
-        if (assignedEmployees.length === 0) {
-            // Affichage placeholder si vide
-            roomContainer.innerHTML = `
-                <p class="text-red-400 text-sm italic opacity-70">Empty zone</p>
-            `;
-        } else {
-            // Affichage des employés trouvés
-            assignedEmployees.forEach(emp => {
-                roomContainer.innerHTML += `
-    <div class="employee-card flex justify-between items-center w-full bg-white border rounded-lg p-2 mb-1 shadow-sm">
-        <div class="flex items-center gap-2">
-            <img src="${emp.profilePicture}" alt="${emp.nom}"
-                class="w-8 h-8 rounded-full object-cover">
-            <span>${emp.nom} - <b>${emp.poste}</b></span>
-        </div>
-        <button onclick="removeEmployeeFromRoom('${emp.ID}')"
-            class="text-red-500 font-bold hover:text-red-700">X</button>
-    </div>
-`;
-
-            });
-        }
-
-        // Mise en évidence des salles vides obligatoires
-        if (assignedEmployees.length === 0 && room !== "conference-room" && room !== "staff-room") {
-            roomContainer.classList.add("bg-red-100");
-        } else {
-            roomContainer.classList.remove("bg-red-100");
-        }
-    });
-}
 function removeEmployeeFromRoom(empId) {
     let employees = JSON.parse(localStorage.getItem("employees")) || [];
     let emp = employees.find(e => e.ID === empId);
@@ -695,4 +659,77 @@ function previewProfilePicture(event) {
 function validatePhone(phone) {
     const phoneRegex = /^(?:\+212|0)([ \-]?\d){9}$/;
     return phoneRegex.test(phone);
+}
+
+
+function placeEmployeeInRoom(roomId, empId) {
+    let lookedId = "people-" + roomId
+    let room = document.getElementById(lookedId);
+    console.log(room);
+    let addedEmployee;
+    try {
+        let arr = JSON.parse(localStorage.getItem("employees"));
+        addedEmployee = arr.find(emp => emp.ID === empId);
+        console.log(addedEmployee);
+
+    } catch (e) {
+        console.log("not found");
+
+    }
+    let miniProfile = document.createElement("div");
+    miniProfile.innerHTML = `
+        <img src="${addedEmployee.profilePicture}" alt="${addedEmployee.nom}>
+    `
+    room.appendChild(miniProfile);
+}
+function renderAllRooms() {
+    const employees = JSON.parse(localStorage.getItem("employees")) || [];
+
+    const rooms = [
+        "conference-room",
+        "reception-room",
+        "servers",
+        "security-room",
+        "staff-room",
+        "archive"
+    ];
+
+    rooms.forEach(room => {
+        const roomContainer = document.getElementById(room);
+
+        if (!roomContainer) console.log("failed to fetch room");
+
+        roomContainer.innerHTML = "";
+
+        const assignedEmployees = employees.filter(e => e.currentLocation === room);
+
+        if (assignedEmployees.length === 0) {
+            roomContainer.innerHTML = `
+                <p class="bold text-sm italic opacity-70">Empty zone</p>
+            `;
+        } else {
+            assignedEmployees.forEach(emp => {
+                roomContainer.innerHTML += `
+                    <div class="employee-card flex justify-between items-center w-full bg-white border rounded-lg p-2 mb-1 shadow-sm">
+                        <div class="flex items-center gap-2">
+                            <img src="${emp.profilePicture}" alt="${emp.nom}"
+                                class="w-8 h-8 rounded-full object-cover">
+                        </div>
+                        <button onclick="removeEmployeeFromRoom('${emp.ID}')"
+                            class="text-red-500 font-bold hover:text-red-700">X</button>
+                            <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${emp.ID}')">
+                        ...
+                    </button>
+                    </div>
+                `;
+
+            });
+        }
+
+        if (assignedEmployees.length === 0 && room !== "conference-room" && room !== "staff-room") {
+            roomContainer.classList.add("bg-red-500/70");
+        } else {
+            roomContainer.classList.remove("bg-red-500/70");
+        }
+    });
 }

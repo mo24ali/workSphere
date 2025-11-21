@@ -42,10 +42,10 @@
                     <div id="conference-room"
                         class="flex flex-col justify-center items-center dragging-area hover:bg-blue-500/50 w-105 h-55 border-b transform duration-300">
                         <!-- <p class="text-black mb-2">Conference room</p> -->
-                        <div id="peopleInConferenceRoom"></div>
+                        <div id="people-conference-room"></div>
                         <button id="listInConferenceRoom"
                             class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
-                            title="See who is allowed in this room">
+                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('conference-room')">
                             <i class="fa-solid fa-add"></i>
                         </button>
                     </div>
@@ -55,10 +55,12 @@
                     <div id="servers"
                         class=" flex flex-col justify-center items-center text-center dragging-area hover:bg-green-500/50 w-61 h-55 justify-center items-center border-b transform duration-300">
                         <!-- <p class="text-center text-black">servers</p> -->
-                        <div id="peopleInServersRoom"></div>
+                        <div id="people-servers">
+                            here
+                        </div>
                         <button id="listInServersRoom"
                             class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
-                            title="See who is allowed in this room">
+                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('servers')">
                             <i class="fa-solid fa-add"></i>
 
                         </button>
@@ -66,10 +68,10 @@
                     <div id="security-room"
                         class="flex flex-col dragging-area hover:bg-red-500/50 w-62 h-55 justify-center items-center border-b transform duration-300">
                         <!-- <p class="text-center text-black">security-room</p> -->
-                        <div id="peopleInSecurityRoom"></div>
+                        <div id="people-security-room"></div>
                         <button id="listInSecurityRoom"
                             class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                            title="See who is allowed in this room">
+                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('security-room')">
                             <i class="fa-solid fa-add"></i>
                         </button>
                     </div>
@@ -78,10 +80,10 @@
                     <div id="reception-room"
                         class="flex flex-col dragging-area hover:bg-red-500/50 w-105 h-105 justify-center items-center border-b transform duration-300">
                         <!-- <p class="text-black text-center">Hall and reception</p> -->
-                        <div id="peopleInReceptionRoom"></div>
+                        <div id="people-reception-room"></div>
                         <button id="listInReceptionRoom"
                             class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                            title="See who is allowed in this room">
+                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('reception-room')">
                             <i class="fa-solid fa-add"></i>
                         </button>
                     </div>
@@ -95,11 +97,11 @@
                         <div id="staff-room"
                             class="flex flex-col dragging-area hover:bg-green-500/50 w-60 h-50 justify-center items-center border-b transform duration-300">
                             <!-- <p class="text-black text-center">staff-room</p> -->
-                            <div id="peopleInStaffRoom"></div>
+                            <div id="people-staff-room"></div>
 
                             <button id="listInStaffnRoom"
                                 class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                                title="See who is allowed in this room">
+                                title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('staff-room')">
                                 <i class="fa-solid fa-add"></i>
                             </button>
 
@@ -107,10 +109,10 @@
                         <div id="archive"
                             class="flex flex-col dragging-area hover:bg-red-500/50 w-61 h-50 justify-center items-center border-b transform duration-300">
                             <!-- <p class="text-black text-center">archive</p> -->
-                            <div id="peopleInArchiveRoom"></div>
+                            <div id="people-archive"></div>
                             <button id="listInArchiveRoom"
                                 class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                                title="See who is allowed in this room">
+                                title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('archive')">
                                 <i class="fa-solid fa-add"></i>
                             </button>
 
@@ -135,13 +137,12 @@
                 <div class="space-y-4">
                     <div id="profil-pic-div" class="flex flex-col justify-center items-center">
                         <label for="pic" class="block mb-1">Photo de profil :</label>
-                        <div id="fileSlect"
-                            class="w-20 h-20 rounded-full bg-gray-500 flex flex-col justify-center items-center hover:bg-gray-700 transform duration-300">
-                            <input type="file" id="profilePictureInput" accept="image/*" class="border p-2 rounded"
-                                onchange="previewProfilePicture(event)">
-                            <img id="profilePreview" class="w-20 h-20 rounded-full object-cover mt-2 hidden">
-                            <i class="fa-solid fa-camera w-10 h-10 mt-5"></i>
-                        </div>
+                        <label for="profilePictureInput">Profile Picture URL :</label>
+                        <input type="url" id="profilePictureInput" placeholder="path-pic-jpg"
+                            class="border p-2 mb-2 rounded">
+                        <img id="profilePreview" class="w-28 h-28 rounded-full object-cover hidden border mb-3"
+                            alt="preview">
+
                     </div>
                     <div>
                         <label for="nom" class="block mb-1">Nom :</label>
