@@ -1,24 +1,21 @@
+let employeeListElements = document.getElementById("employee-list")
 let employeeList = document.getElementById("employee-list");
 //arrays to store the staff
 let employeeTab = JSON.parse(localStorage.getItem("employees")) || [];
 let addEmployeeBtn = document.getElementById("add-employee-btn");
-
 let receptArr = JSON.parse(localStorage.getItem("receptionists")) || [];
 let techniciancsArr = JSON.parse(localStorage.getItem("technicians")) || [];
 let secAgents = JSON.parse(localStorage.getItem("securityAgents")) || [];
 //add button in the aside section to open the form
 let addForm = document.getElementById("add-employee-form");
-
 //form buttons
 let form = document.getElementById("form");
 let closeForm = document.getElementById("closeForm");
 let dynamicDiv = document.getElementById("divForDynamicSection");
 let addMoreExperience = document.getElementById("moreExperienceBtn");
-
 //global variables
 let experienceCount = 0;
 let currentEmpID = null;
-
 //popup variables 
 let employeeDetailsPopup = document.getElementById("employee-details-popup");
 let employeeDetailsContent = document.getElementById("employee-details-content");
@@ -28,45 +25,32 @@ function initForm() {
     setupEventListeners();
     fillTheUnassignedWorkersAuto();
 }
-
 function setupEventListeners() {
     addEmployeeBtn.addEventListener('click', openForm);
-
     closeForm.addEventListener("click", closeFormHandler);
-
     addMoreExperience.addEventListener("click", addExperienceField);
-
     form.addEventListener("submit", handleFormSubmit);
-
-    // document.getElementById("fileSlect").addEventListener("click", () => {
-    //     document.getElementById("fileElem").click();
-    // });
     closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
-
     employeeDetailsPopup.addEventListener("click", (e) => {
         if (e.target === employeeDetailsPopup) {
             closeEmployeeDetails();
         }
     });
 }
-
 function openForm() {
     addForm.classList.remove("hidden");
     resetForm();
 }
-
 function closeFormHandler() {
     resetForm();
     addForm.classList.add("hidden");
 }
-
 function resetForm() {
     form.reset();
     dynamicDiv.innerHTML = "";
     experienceCount = 0;
     currentEmpID = null;
 }
-
 function addExperienceField() {
     experienceCount++;
 
@@ -101,14 +85,12 @@ function addExperienceField() {
 
     dynamicDiv.appendChild(experienceField);
 }
-
 function removeExperience(button) {
     const experienceField = button.closest('.experience-field');
     experienceField.remove();
     experienceCount--;
     updateExperienceNumbers();
 }
-
 function updateExperienceNumbers() {
     const experienceFields = document.querySelectorAll('.experience-field');
     experienceFields.forEach((field, index) => {
@@ -133,30 +115,25 @@ function updateExperienceNumbers() {
         });
     });
 }
-
 function confirmExperience(button) {
     const experienceField = button.closest('.experience-field');
     const titleInput = experienceField.querySelector('.title-input');
     const descInput = experienceField.querySelector('.desc-input');
     const startInput = experienceField.querySelector('.start-date-input');
     const endInput = experienceField.querySelector('.end-date-input');
-
     const expTitle = titleInput.value.trim();
     const expDesc = descInput.value.trim();
     const startDate = startInput.value;
     const endDate = endInput.value;
-
     // Validate this specific experience
     if (!expTitle) {
         alert('Please enter a title for this experience');
         return;
     }
-
     if (startDate && endDate && new Date(startDate) > new Date(endDate)) {
         alert('End date cannot be before start date');
         return;
     }
-
     // Convert to read-only display
     experienceField.innerHTML = `
         <h3 class="font-medium mb-2">Experience #${Array.from(document.querySelectorAll('.experience-field')).indexOf(experienceField) + 1}</h3>
@@ -166,7 +143,6 @@ function confirmExperience(button) {
         <p><strong>End:</strong> ${endDate || 'N/A'}</p>
         <button type="button" class="remove-btn rounded bg-red-500 hover:bg-red-700 w-24 text-white py-1 mt-2" onclick="removeExperience(this)">Remove</button>
     `;
-
     Toastify({
         text: "Experience added successfully!",
         duration: 2000,
@@ -176,7 +152,6 @@ function confirmExperience(button) {
         style: { background: "green" }
     }).showToast();
 }
-
 function validateForm() {
     const name = document.getElementById("nom").value.trim();
     const firstname = document.getElementById("pnom").value.trim();
@@ -215,24 +190,19 @@ function validateForm() {
 
     return true;
 }
-
 function handleFormSubmit(e) {
     e.preventDefault();
-
     if (!validateForm()) {
         return;
     }
-
     const name = document.getElementById("nom").value.trim();
     const firstname = document.getElementById("pnom").value.trim();
     const email = document.getElementById("mail").value.trim();
     const poste = document.getElementById("positionsSelector").value;
     const desc = document.getElementById("desc").value.trim();
 
-    // Collect experiences from read-only fields
     const experiences = [];
     const experienceFields = document.querySelectorAll('.experience-field');
-
     experienceFields.forEach(field => {
         const paragraphs = field.querySelectorAll('p');
         if (paragraphs.length >= 4) {
@@ -244,27 +214,20 @@ function handleFormSubmit(e) {
             });
         }
     });
-
     addEmployee(name, firstname, email, poste, desc, experiences);
 }
-
 function naiveId() {
     let employees = JSON.parse(localStorage.getItem("employees")) || [];
     let id;
-
     do {
         id = Date.now().toString(36) + Math.random().toString(36).substr(2);
     } while (employees.some(emp => emp.ID === id));
-
     return id;
 }
-
-
 document.getElementById("profilePictureInput").addEventListener("input", previewProfilePictureURL);
 function previewProfilePictureURL() {
     const url = document.getElementById("profilePictureInput").value.trim();
     const preview = document.getElementById("profilePreview");
-
     if (url && url.startsWith("http")) {
         preview.src = url;
         preview.classList.remove("hidden");
@@ -272,7 +235,6 @@ function previewProfilePictureURL() {
         preview.classList.add("hidden");
     }
 }
-
 function addEmployee() {
     const nom = document.getElementById("nom").value.trim();
     const prenom = document.getElementById("pnom").value.trim();
@@ -288,11 +250,9 @@ function addEmployee() {
     } else {
         document.getElementById("phoneError").classList.add("hidden");
     }
-
     // Collect confirmed experiences
     const experiences = [];
     const experienceFields = document.querySelectorAll('.experience-field');
-
     experienceFields.forEach(field => {
         const paragraphs = field.querySelectorAll('p');
         if (paragraphs.length >= 4) {
@@ -304,9 +264,7 @@ function addEmployee() {
             });
         }
     });
-
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
-
     const newEmployee = {
         ID: naiveId(),
         nom,
@@ -319,7 +277,6 @@ function addEmployee() {
         currentLocation: "unassigned",
         experiences
     };
-
     employees.push(newEmployee);
     localStorage.setItem("employees", JSON.stringify(employees));
 
@@ -329,19 +286,14 @@ function addEmployee() {
     document.getElementById("profilePreview").classList.add("hidden");
     addForm.classList.add("hidden");
 }
-
-
 addForm.addEventListener('click', (e) => {
     if (e.target == addForm) {
         addForm.classList.add("hidden");
     }
 })
-
-document.addEventListener("DOMContentLoaded",()=>{
-     initForm() 
-    //  renderAllRooms()
+document.addEventListener("DOMContentLoaded", () => {
+    initForm()
 })
-
 //to review
 function removeEmployee(empId) {
     try {
@@ -349,9 +301,11 @@ function removeEmployee(empId) {
         let isEmployee = (emp) => emp.ID === empId;
         let employeeIndex = employeeArray.findIndex(isEmployee);
         console.log(employeeIndex);
-        employeeArray.splice(1, employeeIndex);
+        employeeArray.splice(employeeIndex, 1);
         localStorage.setItem("employees", JSON.stringify(employeeArray));
-        console.log("emloyee with id " + empId + " is successfully deleted");
+        fillTheUnassignedWorkersAuto();
+        renderAllRooms();
+
 
     } catch (e) {
         console.log("error deleting employee with id " + empId);
@@ -359,12 +313,12 @@ function removeEmployee(empId) {
     }
 
 }
-
-
-
 function fillTheUnassignedWorkersAuto() {
     const arr = JSON.parse(localStorage.getItem("employees")) || [];
-    employeeList.innerHTML = arr.map((element) => {
+
+    const unassigned = arr.filter(emp => emp.currentLocation === "unassigned");
+    employeeList.innerHTML = unassigned.map((element) => {
+
         return `
         <li id="emp=${element.ID}" draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50" clickable="true">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3" clickable="false">
@@ -394,10 +348,7 @@ function fillTheUnassignedWorkersAuto() {
         `;
     }).join('');
 }
-
 // Initialize when DOM is loaded
-// document.addEventListener('DOMContentLoaded', initForm);
-
 // Drag and drop functionality (keep your existing implementation)
 function dragAndDrop() {
     let selected;
@@ -417,8 +368,6 @@ function dragAndDrop() {
         });
     }
 }
-
-
 function showEmployeeDetails(employeeId) {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
@@ -490,17 +439,14 @@ function showEmployeeDetails(employeeId) {
 
     employeeDetailsPopup.classList.remove("hidden");
 }
-
 // Close employee details popup
 function closeEmployeeDetails() {
     employeeDetailsPopup.classList.add("hidden");
 }
-
 //add employee to room popup
 let addEmployeePopup = document.getElementById("add-employee-popup");
 let closeAddEmployeePopup = document.getElementById("closeAddEmployeePopup");
 let listOfEmployeesToAdd = document.getElementById("add-employee-content");
-
 closeAddEmployeePopup.addEventListener("click", () => {
     addEmployeePopup.classList.add("hidden");
 
@@ -510,7 +456,6 @@ addEmployeePopup.addEventListener("click", (e) => {
         addEmployeePopup.classList.add("hidden");
     }
 })
-
 //assign each employee to a room
 let assignConferenceRoom = document.getElementById("listInConferenceRoom");
 let assignedServersRoom = document.getElementById("listInServersRoom");
@@ -558,7 +503,7 @@ function fillEmployeesToAddLIst(room) {
 
     popup.classList.remove("hidden");
 }
-
+//myabe it can be needed 
 let roomNames = [
     {
         roomName: "Conference room",
@@ -589,30 +534,12 @@ let roomNames = [
     }
 
 ]
+let storeRoomsNumbers = JSON.stringify(roomNames);
+// localStorage.setItem(storeRoomsNumbers);
 
 
+//////////////////////////////////////////////////////////
 window.onload = () => {
-    fillTheUnassignedWorkersAuto();
-    renderAllRooms();
-}
-
-
-
-function removeEmployeeFromRoom(empId) {
-    let employees = JSON.parse(localStorage.getItem("employees")) || [];
-    let emp = employees.find(e => e.ID === empId);
-    emp.currentLocation = "unassigned";
-    localStorage.setItem("employees", JSON.stringify(employees));
-    Toastify(
-        {
-            text: "removed from room" ,
-            duration: 2000,
-            close: true,
-            gravity: "top",
-            position: "right",
-            style: { background: "green"}
-        }
-    ).showToast();
     fillTheUnassignedWorkersAuto();
     renderAllRooms();
 }
@@ -620,28 +547,67 @@ function validatePhone(phone) {
     const phoneRegex = /^(?:\+212|0)([ \-]?\d){9}$/;
     return phoneRegex.test(phone);
 }
-
-function assignEmployeeToRoom(empId, room) {
+function removeEmployeeFromRoom(empId) {
     let employees = JSON.parse(localStorage.getItem("employees")) || [];
-    let emp = employees.find(e => e.ID === empId); 
-    if (emp) {
-        emp.currentLocation = room;
-        localStorage.setItem("employees", JSON.stringify(employees));
-
-        Toastify({
-            text: emp.nom + " moved to " + room,
+    let emp = employees.find(e => e.ID === empId);
+    emp.currentLocation = "unassigned";
+    localStorage.setItem("employees", JSON.stringify(employees));
+    Toastify(
+        {
+            text: "removed from room",
             duration: 2000,
             close: true,
             gravity: "top",
             position: "right",
-            style: { background: "linear-gradient(to right,#00b09b,#96c93d)" }
-        }).showToast();
-
-        fillTheUnassignedWorkersAuto();
-        renderAllRooms();
-        document.getElementById("add-employee-popup").classList.add("hidden");
-    }
+            style: { background: "green" }
+        }
+    ).showToast();
+    fillTheUnassignedWorkersAuto();
+    renderAllRooms();
 }
+function assignEmployeeToRoom(empId, room) {
+    let employees = JSON.parse(localStorage.getItem("employees")) || [];
+    let emp = employees.find(e => e.ID === empId);
+    if (!emp) {
+        console.warn("assignEmployeeToRoom: employee not found", empId);
+        return;
+    }
+    const assignedEmployees = employees.filter(e => e.currentLocation === room);
+    const limit = (roomLimits && roomLimits[room]) ;
+    if (assignedEmployees.length >= limit) {
+        return Toastify({
+            text: "Room is full",
+            duration: 2000,
+            close: true,
+            gravity: "top",
+            position: "right",
+            style: { background: "red" }
+        }).showToast();
+    }
+    emp.currentLocation = room;
+    localStorage.setItem("employees", JSON.stringify(employees));
+    Toastify({
+        text: emp.nom + " moved to " + room,
+        duration: 2000,
+        close: true,
+        gravity: "top",
+        position: "right",
+        style: { background: "linear-gradient(to right,#00b09b,#96c93d)" }
+    }).showToast();
+    fillTheUnassignedWorkersAuto();
+    renderAllRooms();
+    const popup = document.getElementById("add-employee-popup");
+    if (popup) popup.classList.add("hidden");
+}
+
+const roomLimits = {
+    "conference-room": 4,
+    "reception-room": 2,
+    "servers": 3,
+    "security-room": 2,
+    "staff-room": 6,
+    "archive": 1
+};
 function renderAllRooms() {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const rooms = [
@@ -652,38 +618,55 @@ function renderAllRooms() {
         "staff-room",
         "archive"
     ];
+
     rooms.forEach(room => {
         const roomContainer = document.getElementById(room);
-        if (!roomContainer) console.log("failed to fetch room");
+        if (!roomContainer) {
+            console.warn("Room container not found:", room);
+            return;
+        }
+
+        // Create or fetch employee display area
+        let employeeArea = roomContainer.querySelector(".room-employees");
+        if (!employeeArea) {
+            employeeArea = document.createElement("div");
+            employeeArea.classList.add("room-employees");
+
+            const addBtn = roomContainer.querySelector(".add-btn");
+            if (addBtn) {
+                roomContainer.insertBefore(employeeArea, addBtn);
+            } else {
+                roomContainer.appendChild(employeeArea);
+            }
+        }
+
+        employeeArea.innerHTML = "";
+
         const assignedEmployees = employees.filter(e => e.currentLocation === room);
+        const roomLimit = roomLimits[room] ;
+        // ?? Infinity
         if (assignedEmployees.length === 0) {
-            roomContainer.innerHTML += `
-                <p class="bold text-sm italic opacity-70">Empty zone</p>
+            employeeArea.innerHTML = `
+                <p class="text-sm italic opacity-75 text-center">Empty zone</p>
             `;
         } else {
             assignedEmployees.forEach(emp => {
-                roomContainer.innerHTML += `
-                    <div class="employee-card flex flex-col justify-between items-center w-20 bg-white border rounded-lg p-2 mb-1 shadow-sm">
-                        <div class="flex items-center gap-2">
-                            <img src="${emp.profilePicture}" alt="${emp.nom}"
-                                class="w-8 h-8 rounded-full object-cover">
-                        </div>
-                        <div class="flex flex-row gap-2">
-                            <button onclick="removeEmployeeFromRoom('${emp.ID}')"
-                            class="text-red-500 font-bold hover:text-red-700">X</button>
-                            <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${emp.ID}')">
-                        ...
-                    </button>
-                        </div>
-                    </div>
-                `;
+                const card = document.createElement("div");
+                card.className = "employee-card bg-white border rounded-sm p-2 text-xs flex flex-col items-center gap-1";
 
+                card.innerHTML = `
+                    <img src="${emp.profilePicture}" class="w-8 h-8 rounded-full object-cover" />
+                    <span>${emp.nom}</span>
+                `;
+                employeeArea.appendChild(card);
             });
         }
-        if (assignedEmployees.length === 0 && room !== "conference-room" && room !== "staff-room") {
-            roomContainer.classList.add("bg-red-500/70");
-        } else {
-            roomContainer.classList.remove("bg-red-500/70");
-        }
+
+        roomContainer.querySelector(".room-capacity")?.remove();
+        const cap = document.createElement("p");
+        cap.className = "room-capacity text-[10px] text-gray-600 mt-1 text-center";
+        cap.textContent = `${assignedEmployees.length}/${roomLimit}`;
+        employeeArea.insertAdjacentElement("afterend", cap);
     });
 }
+
