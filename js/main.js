@@ -638,6 +638,8 @@ function renderAllRooms() {
     });
 }
 
+
+
 document.getElementById("jobsFilter").addEventListener("change", fillTheUnassignedWorkersAuto);
 document.getElementById("searchInput").addEventListener("input", fillTheUnassignedWorkersAuto);
 
