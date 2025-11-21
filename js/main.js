@@ -618,7 +618,6 @@ function renderAllRooms() {
         "staff-room",
         "archive"
     ];
-
     rooms.forEach(room => {
         const roomContainer = document.getElementById(room);
         if (!roomContainer) {
@@ -626,7 +625,6 @@ function renderAllRooms() {
             return;
         }
 
-        // Create or fetch employee display area
         let employeeArea = roomContainer.querySelector(".room-employees");
         if (!employeeArea) {
             employeeArea = document.createElement("div");
@@ -655,8 +653,17 @@ function renderAllRooms() {
                 card.className = "employee-card bg-white border rounded-sm p-2 text-xs flex flex-col items-center gap-1";
 
                 card.innerHTML = `
-                    <img src="${emp.profilePicture}" class="w-8 h-8 rounded-full object-cover" />
-                    <span>${emp.nom}</span>
+                     <div class="flex items-center gap-2">
+                            <img src="${emp.profilePicture}" alt="${emp.nom}"
+                                class="w-8 h-8 rounded-full object-cover">
+                        </div>
+                        <div class="flex flex-row gap-2">
+                            <button onclick="removeEmployeeFromRoom('${emp.ID}')"
+                            class="text-red-500 font-bold hover:text-red-700">X</button>
+                            <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${emp.ID}')">
+                        ...
+                    </button>
+                    </div>
                 `;
                 employeeArea.appendChild(card);
             });
