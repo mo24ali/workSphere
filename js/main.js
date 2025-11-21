@@ -1,4 +1,3 @@
-let employeeListElements = document.getElementById("employee-list")
 let employeeList = document.getElementById("employee-list");
 //arrays to store the staff
 let employeeTab = JSON.parse(localStorage.getItem("employees")) || [];
@@ -16,11 +15,61 @@ let addMoreExperience = document.getElementById("moreExperienceBtn");
 //global variables
 let experienceCount = 0;
 let currentEmpID = null;
+const roomLimits = {
+    "conference-room": 4,
+    "reception-room": 2,
+    "servers": 3,
+    "security-room": 2,
+    "staff-room": 6,
+    "archive": 1
+};
 //popup variables 
 let employeeDetailsPopup = document.getElementById("employee-details-popup");
 let employeeDetailsContent = document.getElementById("employee-details-content");
 let closeDetailsPopup = document.getElementById("closeDetailsPopup");
 // Initialize form functionality
+
+function fillTheUnassignedWorkersAuto() {
+    const arr = JSON.parse(localStorage.getItem("employees")) || [];
+
+    const filterJob = document.getElementById("jobsFilter").value;
+    const searchValue = document.getElementById("searchInput").value.toLowerCase();
+
+    let result = arr.filter(emp => emp.currentLocation === "unassigned");
+
+    if (filterJob !== "") { 
+        result = result.filter(emp => emp.poste === filterJob);
+    }
+
+    if (searchValue.trim() !== "") {
+        result = result.filter(emp =>
+            emp.nom.toLowerCase().includes(searchValue) ||
+            emp.prenom.toLowerCase().includes(searchValue)
+        );
+    }
+
+    employeeList.innerHTML = result.map((element) => {
+        return `
+        <li id="emp=${element.ID}" draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50">
+            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
+                <img src="${element.profilePicture}" alt="Employee" class="w-12 h-12 rounded-full">
+                <div class="emp-info flex-1 min-w-0">
+                    <div class="font-medium truncate">${element.nom} ${element.prenom}</div>
+                    <div class="text-sm text-gray-600 truncate">${element.poste}</div>
+                </div>
+                <div class="employee-actions flex gap-2">
+                    <div class="flex flex-col gap-2">
+                        <button class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300" onclick="removeEmployee('${element.ID}')">Delete</button>
+                        <button class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">Edit</button>
+                    </div>
+                    <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center transform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${element.ID}')">...</button>
+                </div>
+            </div>
+        </li>
+        `;
+    }).join('');
+}
+
 function initForm() {
     setupEventListeners();
     fillTheUnassignedWorkersAuto();
@@ -313,46 +362,11 @@ function removeEmployee(empId) {
     }
 
 }
-function fillTheUnassignedWorkersAuto() {
-    const arr = JSON.parse(localStorage.getItem("employees")) || [];
-
-    const unassigned = arr.filter(emp => emp.currentLocation === "unassigned");
-    employeeList.innerHTML = unassigned.map((element) => {
-
-        return `
-        <li id="emp=${element.ID}" draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50" clickable="true">
-            <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3" clickable="false">
-                <img src="${element.profilePicture}" alt="Employee" class="w-12 h-12 rounded-full">
-                <div class="emp-info flex-1 min-w-0" clickable="false">
-                    <div id="name" class="font-medium truncate" clickable="false">${element.nom} ${element.prenom}</div>
-                    <div id="position" class="text-sm text-gray-600 truncate" clickable="false">${element.poste}</div>
-                </div>
-                <div class="employee-actions flex gap-2" clickable="false">
-                    <div class="flex flex-col gap-2">
-                        <button
-                        class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300"
-                        onclick="removeEmployee('${element.ID}')">
-                        Delete
-                    </button>
-                    <button
-                        class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">
-                        Edit
-                    </button>
-                    </div>
-                    <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${element.ID}')">
-                        ...
-                    </button>
-                </div>
-            </div>
-        </li>
-        `;
-    }).join('');
-}
 // Initialize when DOM is loaded
 // Drag and drop functionality (keep your existing implementation)
 function dragAndDrop() {
     let selected;
-    for (let el of employeeListElements) {
+    for (let el of employeeList) {
         el.addEventListener("dragstart", (e) => {
             selected = e.target;
             console.log(selected);
@@ -466,17 +480,14 @@ let roomRoles = {
 };
 function fillEmployeesToAddLIst(room) {
     console.log(room);
-
+    console.log("clicked");
+    
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const popup = document.getElementById("add-employee-popup");
-    // const list = document.getElementById("add-employee-content");
-    // console.log(getIndexRoom(room));
     console.log(roomRoles[room]);
-
     let allowedRoles = [];
     allowedRoles = roomRoles[room];
     console.log(allowedRoles);
-
     const eligible = employees.filter(emp =>
         emp.currentLocation === "unassigned" && allowedRoles.includes(emp.poste)
     );
@@ -495,38 +506,7 @@ function fillEmployeesToAddLIst(room) {
 
     popup.classList.remove("hidden");
 }
-//myabe it can be needed 
-let roomNames = [
-    {
-        roomName: "Conference room",
-        roomId: "conference-room",
-        employees: []
-    },
-    {
-        roomName: "Servers room",
-        roomId: "servers",
-        employees: []
-    }
-    , {
-        roomName: "Security room",
-        roomId: "security-room",
-        employees: []
-    }, {
-        roomName: "Reception room",
-        roomId: "reception-room",
-        employees: []
-    }, {
-        roomName: "Staff room",
-        roomId: "staff-room",
-        employees: []
-    }, {
-        roomName: "Archive room",
-        roomId: "archive",
-        employees: []
-    }
 
-]
-let storeRoomsNumbers = JSON.stringify(roomNames);
 window.onload = () => {
     fillTheUnassignedWorkersAuto();
     renderAllRooms();
@@ -587,14 +567,8 @@ function assignEmployeeToRoom(empId, room) {
     const popup = document.getElementById("add-employee-popup");
     if (popup) popup.classList.add("hidden");
 }
-const roomLimits = {
-    "conference-room": 4,
-    "reception-room": 2,
-    "servers": 3,
-    "security-room": 2,
-    "staff-room": 6,
-    "archive": 1
-};
+
+
 function renderAllRooms() {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const rooms = [
@@ -663,4 +637,15 @@ function renderAllRooms() {
         employeeArea.insertAdjacentElement("afterend", cap);
     });
 }
+
+document.getElementById("jobsFilter").addEventListener("change", fillTheUnassignedWorkersAuto);
+document.getElementById("searchInput").addEventListener("input", fillTheUnassignedWorkersAuto);
+
+    fillTheUnassignedWorkersAuto();
+
+document.addEventListener("DOMContentLoaded",()=>{
+    document.getElementById("searchInput").value = "";
+    document.getElementById("jobsFilter").value = "position";
+
+})
 

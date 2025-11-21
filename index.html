@@ -14,10 +14,7 @@
     <header class="bg-gray-800 text-white p-4 shadow-md">
         <div class="container mx-auto flex flex-col sm:flex-row justify-between items-center space-y-4 sm:space-y-0">
             <div id="logo" class="text-xl font-bold">diOffice</div>
-            <div id="search-bar" class="w-full sm:w-64">
-                <input type="text" placeholder="Search employees..."
-                    class="w-full px-4 py-2 rounded-lg text-gray-800 bg-white">
-            </div>
+
         </div>
     </header>
 
@@ -29,6 +26,22 @@
                 Add New Worker
             </button>
 
+            <div id="filters" class="flex gap-4">
+                
+                <div id="search-bar" class=" flex w-full sm:w-64 border rounded justify-center items-center gap-4">
+                    <input type="text" placeholder="Search employees..." id="searchInput"
+                        class="w-full px-4 py-2 rounded-lg text-gray-800 bg-white">
+                </div>
+                <select name="selectFilter" id="jobsFilter" class="border rounded w-20">
+                    <option value="" selected>Position</option>
+                    <option value="security">Security </option>
+                    <option value="receptionist">Receptionist</option>
+                    <option value="technician">IT </option>
+                    <option value="cleaning">Cleaning</option>
+                    <option value="manager">Manager</option>
+                    <option value="other">Other</option>
+                </select>
+            </div>
             <div class="scrollable-sidebar">
                 <ul id="employee-list" class="space-y-3 overflow-auto max-h-96">
                     <!-- filled dynamically in JS -->
@@ -206,32 +219,34 @@
     <!-- POPUPS -->
     <!-- Employee Details Popup -->
     <div id="employee-details-popup"
-        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-50 hidden">
-        <div class="bg-white rounded-xl p-6 border shadow-xl mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold">Employee Details</h2>
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-start sm:items-center p-2 sm:p-4 z-50 hidden">
+        <div
+            class="bg-white rounded-lg sm:rounded-xl p-4 sm:p-6 border shadow-lg sm:shadow-xl w-full max-w-xs xs:max-w-sm sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-4 sm:mb-6">
+                <h2 class="text-lg sm:text-xl font-semibold">Employee Details</h2>
                 <button id="closeDetailsPopup" type="button"
-                    class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
+                    class="border rounded-full hover:bg-red-500 hover:text-white w-6 h-6 sm:w-7 sm:h-7 flex justify-center items-center transition text-sm sm:text-base">
                     X
                 </button>
             </div>
-            <div id="employee-details-content">
+            <div id="employee-details-content" class="space-y-3 sm:space-y-4 text-sm sm:text-base">
                 <!-- Content will be filled dynamically -->
             </div>
         </div>
     </div>
 
     <div id="add-employee-popup"
-        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-center z-40 hidden">
-        <div class="bg-white rounded-xl p-6 border shadow-xl mx-4 w-full max-w-2xl max-h-[90vh] overflow-y-auto">
-            <div class="flex justify-between items-center mb-6">
-                <h2 class="text-xl font-semibold">Add Employee to the room</h2>
+        class="fixed inset-0 bg-black/40 backdrop-blur-sm flex justify-center items-start p-1 xs:p-2 sm:p-4 z-40 hidden">
+        <div
+            class="bg-white rounded-lg sm:rounded-xl p-3 xs:p-4 sm:p-6 border shadow-lg sm:shadow-xl mx-1 xs:mx-2 sm:mx-4 w-full max-w-[95vw] xs:max-w-xs sm:max-w-md md:max-w-lg lg:max-w-xl xl:max-w-2xl max-h-[80vh] xs:max-h-[85vh] sm:max-h-[90vh] overflow-y-auto">
+            <div class="flex justify-between items-center mb-3 xs:mb-4 sm:mb-6">
+                <h2 class="text-base xs:text-lg sm:text-xl font-semibold pr-2 xs:pr-0">Add Employee to the room</h2>
                 <button id="closeAddEmployeePopup" type="button"
-                    class="border rounded-full hover:bg-red-500 hover:text-white w-7 h-7 flex justify-center items-center transition">
+                    class="border rounded-full hover:bg-red-500 hover:text-white w-5 h-5 xs:w-6 xs:h-6 sm:w-7 sm:h-7 flex justify-center items-center transition text-xs xs:text-sm sm:text-base flex-shrink-0">
                     X
                 </button>
             </div>
-            <ul id="add-employee-content">
+            <ul id="add-employee-content" class="space-y-1 xs:space-y-2 sm:space-y-3 text-xs xs:text-sm sm:text-base">
                 <!-- Content will be filled dynamically -->
             </ul>
         </div>
@@ -241,4 +256,5 @@
     <script src="js/main.js"></script>
     <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/toastify-js"></script>
 </body>
+
 </html>
