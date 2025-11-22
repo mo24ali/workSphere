@@ -50,7 +50,7 @@ function fillTheUnassignedWorkersAuto() {
 
     employeeList.innerHTML = result.map((element) => {
         return `
-        <li id="emp=${element.ID}" draggable="true" class="dragged-element bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50">
+        <li id="${element.poste}=${element.ID}" draggable="true" class="dragged-element bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <img src="${element.profilePicture}" alt="Employee" class="w-12 h-12 rounded-full">
                 <div class="emp-info flex-1 min-w-0">
@@ -638,42 +638,55 @@ document.addEventListener("DOMContentLoaded", () => {
 
 })
 
+
+
 function enableDragAndDrop() {
-    let employeesToBeDragged = document.querySelectorAll('.dragging-area');
-    console.log(employeesToBeDragged);
-    console.log(employeesToBeDragged.length);
-    console.log("in enable drag");
+    let draggableElements = document.querySelectorAll(".dragged-element");
+    let draggableAreas = document.querySelectorAll(".dragging-area");
 
-    document.querySelectorAll(".dragged-element").forEach(emp => {
-        
+    draggableElements.forEach(emp => {
         emp.addEventListener("dragstart", (e) => {
-            console.log("drag start");
-
             e.dataTransfer.setData("text/plain", emp.id);
-            console.log("sent:", emp.id);
+            let empID = emp.id;
+            let role =  empID.split('=')[0];
 
-            let employees = JSON.parse(localStorage.getItem("employees")) || [];
-            let employeeObj = employees.find(x => x.ID === emp.id);
-
-            employeesToBeDragged.forEach(room => {
-                let roomName = room.id;
-                if (roomRoles[roomName]?.includes(employeeObj.poste)) {
-                    room.classList.add("bg-green-500");
+            // highlight rooms
+            draggableAreas.forEach(room => {
+                let allowedRoles = roomRoles[room.id] || [];
+                if (allowedRoles.includes(role)) {
+                    room.classList.add("bg-green-500/50");
+                    room.classList.remove("bg-red-500/50");
                 } else {
-                    room.classList.add("bg-red-500");
+                    room.classList.add("bg-red-500/50");
+                    room.classList.remove("bg-green-500/50");
                 }
             });
         });
 
-        emp.addEventListener('dragend', () => {
-            console.log("in dragend");
-
-            document.querySelectorAll('.dragging-area').forEach(room => {
-                room.style.backgroundColor = '';
+        emp.addEventListener("dragend", () => {
+            draggableAreas.forEach(room => {
+                room.classList.remove("bg-green-500/50", "bg-red-500/50");
             });
         });
     });
+
+    // Optional: allow drop logic
+    draggableAreas.forEach(room => {
+        room.addEventListener("dragover", (e) => e.preventDefault());
+        room.addEventListener("drop", (e) => {
+            e.preventDefault();
+            const empId = e.dataTransfer.getData("text/plain");
+            const role = employeeRoles[empId];
+            const allowedRoles = roomRoles[room.id] || [];
+            if (allowedRoles.includes(role)) {
+                room.appendChild(document.getElementById(empId));
+            } else {
+                alert("You cannot drop this employee here!");
+            }
+        });
+    });
 }
+
 function makeRoomsDroppable() {
 
     let listOfdraggableRooms = document.querySelectorAll('.dragging-area')
@@ -682,14 +695,14 @@ function makeRoomsDroppable() {
         // console.log(roomId);
         // console.log(roomRoles[roomId]);
         room.addEventListener('dragover', (e) => {
-            console.log("in dragover");
-
+            // console.log("in dragover");
+            
             e.preventDefault();
         });
         room.addEventListener('drop', (e) => {
             e.preventDefault();
             let empId = e.dataTransfer.getData('text/plain').split('=')[1];
-            console.log("drop");
+            // console.log("drop");
 
             console.log(empId);
 
@@ -697,15 +710,15 @@ function makeRoomsDroppable() {
             // console.log(employees);
 
             let employee = employees.find(emp => emp.ID === empId);
-            console.log("founded employee");
+            // console.log("founded employee");
 
-            console.log(employee);
+            // console.log(employee);
 
 
-            console.log("targeted room");
-            console.log(roomId);
+            // console.log("targeted room");
+            // console.log(roomId);
 
-            console.log(roomRoles[roomId]);
+            // console.log(roomRoles[roomId]);
 
 
             if (!roomRoles[roomId].includes(employee.poste)) {
