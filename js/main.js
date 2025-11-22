@@ -37,7 +37,7 @@ function fillTheUnassignedWorkersAuto() {
 
     let result = arr.filter(emp => emp.currentLocation === "unassigned");
 
-    if (filterJob !== "") { 
+    if (filterJob !== "") {
         result = result.filter(emp => emp.poste === filterJob);
     }
 
@@ -50,7 +50,7 @@ function fillTheUnassignedWorkersAuto() {
 
     employeeList.innerHTML = result.map((element) => {
         return `
-        <li id="emp=${element.ID}" draggable="true" class="bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50">
+        <li id="emp=${element.ID}" draggable="true" class="dragged-element bg-gray-50 rounded-lg border border-gray-200 p-3 employee-card hover:z-50">
             <div class="flex flex-col sm:flex-row items-start sm:items-center gap-3">
                 <img src="${element.profilePicture}" alt="Employee" class="w-12 h-12 rounded-full">
                 <div class="emp-info flex-1 min-w-0">
@@ -68,11 +68,13 @@ function fillTheUnassignedWorkersAuto() {
         </li>
         `;
     }).join('');
+    enableDragAndDrop();
 }
 
 function initForm() {
     setupEventListeners();
     fillTheUnassignedWorkersAuto();
+    enableDragAndDrop();
 }
 function setupEventListeners() {
     addEmployeeBtn.addEventListener('click', openForm);
@@ -207,7 +209,6 @@ function validateForm() {
     const email = document.getElementById("mail").value.trim();
     const poste = document.getElementById("positionsSelector").value;
 
-    // Basic validations
     if (!name || name.length < 2) {
         alert('Please enter a valid last name (at least 2 characters)');
         return false;
@@ -229,7 +230,6 @@ function validateForm() {
         return false;
     }
 
-    // Experience validation
     const experienceFields = document.querySelectorAll('.experience-field');
     const unconfirmedExperiences = document.querySelectorAll('.experience-field:has(.confirm-exp-btn)');
     if (unconfirmedExperiences.length > 0) {
@@ -343,7 +343,6 @@ addForm.addEventListener('click', (e) => {
 document.addEventListener("DOMContentLoaded", () => {
     initForm()
 })
-//to review
 function removeEmployee(empId) {
     try {
         let employeeArray = JSON.parse(localStorage.getItem("employees")) || [];
@@ -364,24 +363,7 @@ function removeEmployee(empId) {
 }
 // Initialize when DOM is loaded
 // Drag and drop functionality (keep your existing implementation)
-function dragAndDrop() {
-    let selected;
-    for (let el of employeeList) {
-        el.addEventListener("dragstart", (e) => {
-            selected = e.target;
-            console.log(selected);
-        });
 
-        receptionRoom.addEventListener("dragover", (e) => {
-            e.preventDefault();
-        });
-
-        receptionRoom.addEventListener("drop", (e) => {
-            receptionRoom.appendChild(selected);
-            selected = null;
-        });
-    }
-}
 function showEmployeeDetails(employeeId) {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
@@ -481,7 +463,7 @@ let roomRoles = {
 function fillEmployeesToAddLIst(room) {
     console.log(room);
     console.log("clicked");
-    
+
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const popup = document.getElementById("add-employee-popup");
     console.log(roomRoles[room]);
@@ -541,7 +523,7 @@ function assignEmployeeToRoom(empId, room) {
         return;
     }
     const assignedEmployees = employees.filter(e => e.currentLocation === room);
-    const limit = (roomLimits && roomLimits[room]) ;
+    const limit = (roomLimits && roomLimits[room]);
     if (assignedEmployees.length >= limit) {
         return Toastify({
             text: "Room is full",
@@ -602,7 +584,7 @@ function renderAllRooms() {
         employeeArea.innerHTML = "";
 
         const assignedEmployees = employees.filter(e => e.currentLocation === room);
-        const roomLimit = roomLimits[room] ;
+        const roomLimit = roomLimits[room];
         // ?? Infinity
         if (assignedEmployees.length === 0) {
             employeeArea.innerHTML = `
@@ -643,11 +625,102 @@ function renderAllRooms() {
 document.getElementById("jobsFilter").addEventListener("change", fillTheUnassignedWorkersAuto);
 document.getElementById("searchInput").addEventListener("input", fillTheUnassignedWorkersAuto);
 
-    fillTheUnassignedWorkersAuto();
-
-document.addEventListener("DOMContentLoaded",()=>{
+fillTheUnassignedWorkersAuto();
+// enableDragAndDrop();
+document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchInput").value = "";
     document.getElementById("jobsFilter").value = "position";
+    initForm();
+    enableDragAndDrop();
+    makeRoomsDroppable();
+    // console.log("make rooms droppable");
+
 
 })
 
+function enableDragAndDrop() {
+    let employeesToBeDragged = document.querySelectorAll('.dragged-element');
+    console.log(employeesToBeDragged);
+    console.log(employeesToBeDragged.length);
+    console.log("in enable drag");
+
+    document.querySelectorAll(".dragged-element").forEach(emp => {
+        
+        emp.addEventListener("dragstart", (e) => {
+            console.log("drag start");
+
+            e.dataTransfer.setData("text/plain", emp.id);
+            console.log("sent:", emp.id);
+
+            let employees = JSON.parse(localStorage.getItem("employees")) || [];
+            let employeeObj = employees.find(x => x.ID === emp.id);
+
+            // employeesToBeDragged.forEach(room => {
+            //     let roomName = room.id;
+            //     if (roomRoles[roomName]?.includes(employeeObj.poste)) {
+            //         room.style.backgroundColor = "lightgreen";
+            //     } else {
+            //         room.style.backgroundColor = "#f8d7da";
+            //     }
+            // });
+        });
+
+        emp.addEventListener('dragend', () => {
+            console.log("in dragend");
+
+            document.querySelectorAll('.dragging-area').forEach(room => {
+                room.style.backgroundColor = '';
+            });
+        });
+    });
+}
+function makeRoomsDroppable() {
+
+    let listOfdraggableRooms = document.querySelectorAll('.dragging-area')
+    listOfdraggableRooms.forEach(room => {
+        let roomId = room.id;
+        // console.log(roomId);
+        // console.log(roomRoles[roomId]);
+        room.addEventListener('dragover', (e) => {
+            console.log("in dragover");
+
+            e.preventDefault();
+        });
+        room.addEventListener('drop', (e) => {
+            e.preventDefault();
+            let empId = e.dataTransfer.getData('text/plain').split('=')[1];
+            console.log("drop");
+
+            console.log(empId);
+
+            let employees = JSON.parse(localStorage.getItem("employees")) || [];
+            // console.log(employees);
+
+            let employee = employees.find(emp => emp.ID === empId);
+            console.log("founded employee");
+
+            console.log(employee);
+
+
+            console.log("targeted room");
+            console.log(roomId);
+
+            console.log(roomRoles[roomId]);
+
+
+            if (!roomRoles[roomId].includes(employee.poste)) {
+                Toastify({
+                    text: "This employee cannot go to this room",
+                    duration: 2000,
+                    style: { background: "red" }
+                }).showToast();
+                return;
+            }
+
+            employee.currentLocation = room.id;
+            localStorage.setItem("employees", JSON.stringify(employees));
+            fillTheUnassignedWorkersAuto();
+            renderAllRooms();
+        });
+    });
+}
