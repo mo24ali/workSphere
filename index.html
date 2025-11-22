@@ -27,13 +27,13 @@
             </button>
 
             <div id="filters" class="flex gap-4">
-                
+
                 <div id="search-bar" class=" flex w-full sm:w-64 border rounded justify-center items-center gap-4">
                     <input type="text" placeholder="Search employees..." id="searchInput"
                         class="w-full px-4 py-2 rounded-lg text-gray-800 bg-white">
                 </div>
-                <select name="selectFilter" id="jobsFilter" class="border rounded w-20">
-                    <option value="" selected>Position</option>
+                <select name="selectFilter" id="jobsFilter" class="pl-6 border rounded w-20">
+                    <option value="All">All</option>
                     <option value="security">Security </option>
                     <option value="receptionist">Receptionist</option>
                     <option value="technician">IT </option>
@@ -50,86 +50,71 @@
         </div>
 
         <div class="order-1 lg:order-2 flex-1 min-w-0">
-            <div id="workspace" class="w-full h-55 lg:w-280 lg:h-full bg-[url('assets/workspace_area.jpg')] bg-cover ">
-                <div id="upper-rooms" class="flex">
-                    <div id="conference-room"
-                        class="flex flex-col justify-center items-center dragging-area w-112 h-20 lg:h-55 border-b transform duration-300">
-                        <!-- <p class="text-black mb-2">Conference room</p> -->
-                        <div id="people-conference-room"></div>
-                        <button id="listInConferenceRoom"
-                            class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
-                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('conference-room')">
-                            <i class="fa-solid fa-add"></i>
-                        </button>
-                    </div>
-                    <div class=" w-49 h-20 lg:h-55 justify-center items-center ">
-                    </div>
-                    <div id="servers"
-                        class=" flex flex-col justify-center items-center text-center dragging-area bg-red-500/50 w-61 h-20 lg:h-55 justify-center items-center border-b transform duration-300">
-                        <!-- <p class="text-center text-black">servers</p> -->
-                        <div id="people-servers">
-                            here
-                        </div>
-                        <button id="listInServersRoom"
-                            class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300"
-                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('servers')">
-                            <i class="fa-solid fa-add"></i>
+            <div id="workspace"
+                class="w-[95%] mx-auto mt-5 h-[23vh] gap-1 grid grid-cols-45 grid-rows-18 2xs:h-[27vh] 2xs:py-1 xs:h-[31vh] xs:py-2 sm:w-[90%] sm:h-[50vh] md:w-[75%] md:h-[52vh] lg:w-[70%] lg:h-[55vh] lg:mt-0 xl:w-[85%] xl:h-[76vh] bg-[url('assets/workspace_area.jpg')] bg-cover bg-center bg-no-repeat xl:py-4 xl:px-2">
 
-                        </button>
-                    </div>
-                    <div id="security-room"
-                        class="flex flex-col dragging-area bg-red-500/50 w-62 h-20 lg:h-55 justify-center items-center border-b transform duration-300">
-                        <!-- <p class="text-center text-black">security-room</p> -->
-                        <div id="people-security-room"></div>
-                        <button id="listInSecurityRoom"
-                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('security-room')">
-                            <i class="fa-solid fa-add"></i>
-                        </button>
-                    </div>
+                <div id="conference-room"
+                    class="col-start-1 col-end-[17] row-start-1 row-end-8 flex flex-col justify-center items-center dragging-area">
+                    <div id="people-conference-room"></div>
+                    <button id="listInConferenceRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white"
+                        title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('conference-room')">
+                        <i class="fa-solid fa-add"></i>
+                    </button>
                 </div>
-                <div id="bottom-rooms" class="flex">
-                    <div id="reception-room"
-                        class="flex flex-col dragging-area bg-red-500/50 w-112 h-35 lg:h-105 justify-center items-center border-b transform duration-300">
-                        <!-- <p class="text-black text-center">Hall and reception</p> -->
-                        <div id="people-reception-room"></div>
-                        <button id="listInReceptionRoom"
-                            class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                            title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('reception-room')">
-                            <i class="fa-solid fa-add"></i>
-                        </button>
-                    </div>
-                    <div id="blank-hall" class=" w-35 h-35 lg:h-105 justify-center items-center border-b ">
-                    </div>
-                    <div id="twin-rooms" class="flex grid grid-cols-2 grid-rows-2">
-                        <div class=" w-61 h-16 lg:h-50">
-                        </div>
-                        <div class=" w-61 h-16 lg:h-50">
-                        </div>
-                        <div id="staff-room"
-                            class="flex flex-col dragging-area w-61 h-20 lg:h-55 justify-center items-center border-b transform duration-300">
-                            <!-- <p class="text-black text-center">staff-room</p> -->
-                            <div id="people-staff-room"></div>
-                            <button id="listInStaffnRoom"
-                                class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                                title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('staff-room')">
-                                <i class="fa-solid fa-add"></i>
-                            </button>
-                        </div>
-                        <div id="archive"
-                            class="flex flex-col dragging-area bg-red-500/50 w-61 h-20 lg:h-55 justify-center items-center border-b transform duration-300">
-                            <!-- <p class="text-black text-center">archive</p> -->
-                            <div id="people-archive"></div>
-                            <button id="listInArchiveRoom"
-                                class="rounded-full bg-blue-500/20 hover:bg-blue-700 hover:text-white transform duration-300 w-7 h-7"
-                                title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('archive')">
-                                <i class="fa-solid fa-add"></i>
-                            </button>
 
-                        </div>
-                    </div>
+                <div id="servers"
+                    class="col-start-[26] col-end-[36] row-start-1 row-end-7 flex flex-col justify-center items-center dragging-area">
+                    <div id="people-servers"></div>
+                    <button id="listInServersRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white"
+                        title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('servers')">
+                        <i class="fa-solid fa-add"></i>
+                    </button>
                 </div>
+
+                <div id="security-room"
+                    class="col-start-[36] col-end-[46] row-start-1 row-end-7 flex flex-col justify-center items-center dragging-area">
+                    <div id="people-security-room"></div>
+                    <button id="listInSecurityRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white"
+                        title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('security-room')">
+                        <i class="fa-solid fa-add"></i>
+                    </button>
+                </div>
+
+                <div id="reception-room"
+                    class="col-start-1 col-end-[17] row-start-8 row-end-[19] flex flex-col justify-center items-center dragging-area">
+                    <div id="people-reception-room"></div>
+                    <button id="listInReceptionRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white"
+                        title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('reception-room')">
+                        <i class="fa-solid fa-add"></i>
+                    </button>
+                </div>
+
+                <div id="staff-room"
+                    class="col-start-[26] col-end-[37] row-start-11 row-end-[19] flex flex-col justify-center items-center dragging-area">
+                    <div id="people-staff-room"></div>
+                    <button id="listInStaffnRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white"
+                        title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('staff-room')">
+                        <i class="fa-solid fa-add"></i>
+                    </button>
+                </div>
+
+                <div id="archive"
+                    class="col-start-[37] col-end-[46] row-start-11 row-end-[19] flex flex-col justify-center items-center dragging-area">
+                    <div id="people-archive"></div>
+                    <button id="listInArchiveRoom"
+                        class="rounded-full w-7 h-7 bg-blue-500/20 hover:bg-blue-700 hover:text-white"
+                        title="See who is allowed in this room" onclick="fillEmployeesToAddLIst('archive')">
+                        <i class="fa-solid fa-add"></i>
+                    </button>
+                </div>
+
             </div>
+
         </div>
     </main>
 
@@ -175,7 +160,7 @@
                     <div>
                         <label for="positionsSelector" class="block mb-1">Poste :</label>
                         <select id="positionsSelector" class="w-full border p-2 rounded">
-                            <option value="" selected>Position</option>
+                            <option value="">Position</option>
                             <option value="security">Security Agent</option>
                             <option value="receptionist">Receptionist</option>
                             <option value="technician">IT guy</option>

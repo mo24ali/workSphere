@@ -629,7 +629,7 @@ fillTheUnassignedWorkersAuto();
 // enableDragAndDrop();
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchInput").value = "";
-    document.getElementById("jobsFilter").value = "position";
+    document.getElementById("jobsFilter").value = "";
     initForm();
     enableDragAndDrop();
     makeRoomsDroppable();
@@ -639,7 +639,7 @@ document.addEventListener("DOMContentLoaded", () => {
 })
 
 function enableDragAndDrop() {
-    let employeesToBeDragged = document.querySelectorAll('.dragged-element');
+    let employeesToBeDragged = document.querySelectorAll('.dragging-area');
     console.log(employeesToBeDragged);
     console.log(employeesToBeDragged.length);
     console.log("in enable drag");
@@ -655,14 +655,14 @@ function enableDragAndDrop() {
             let employees = JSON.parse(localStorage.getItem("employees")) || [];
             let employeeObj = employees.find(x => x.ID === emp.id);
 
-            // employeesToBeDragged.forEach(room => {
-            //     let roomName = room.id;
-            //     if (roomRoles[roomName]?.includes(employeeObj.poste)) {
-            //         room.style.backgroundColor = "lightgreen";
-            //     } else {
-            //         room.style.backgroundColor = "#f8d7da";
-            //     }
-            // });
+            employeesToBeDragged.forEach(room => {
+                let roomName = room.id;
+                if (roomRoles[roomName]?.includes(employeeObj.poste)) {
+                    room.classList.add("bg-green-500");
+                } else {
+                    room.classList.add("bg-red-500");
+                }
+            });
         });
 
         emp.addEventListener('dragend', () => {
