@@ -33,7 +33,7 @@ Hosted (if applicable) at: [https://mo24ali.github.io/workSphere/](https://mo24a
 - Responsive layout (works on both desktop & mobile).  
 - Organized assets folder for JS, CSS, and images.  
 - Easy to customise (just edit the HTML/JS files).  
-- *[Add any other features you have: e.g., drag‑and‑drop panels, theme switching, offline storage, custom widgets]*  
+- Drag‑and‑drop
 
 ## 🛠 Tech Stack
 

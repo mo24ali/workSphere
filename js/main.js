@@ -295,7 +295,7 @@ function addEmployee() {
     } else {
         document.getElementById("phoneError").classList.add("hidden");
     }
-    // Collect confirmed experiences
+    //collect confirmed experiences
     const experiences = [];
     const experienceFields = document.querySelectorAll('.experience-field');
     experienceFields.forEach(field => {
@@ -446,12 +446,20 @@ addEmployeePopup.addEventListener("click", (e) => {
     }
 })
 let roomRoles = {
+    /**
+     * Reception → Receptionist, Manager, Cleaning Staff 
+Server Room → IT Technician, Manager, Cleaning Staff 
+Security Room → Security Agent, Manager, Cleaning Staff 
+Archive Room → Manager only 
+Conference Room → ALL 6 roles 
+Staff Room → ALL 6 roles
+     */
     "servers": ["technician", "manager", "cleaning"],
     "security-room": ["security", "cleaning", "manager"],
     "archive": ["manager"],
-    "staff-room": ["technician", "manager", "cleaning", "security", "receptionist"],
-    "conference-room": ["manager"],
-    "reception-room": ["receptionist", "manager"]
+    "staff-room": ["manager","cleaning", "security", "receptionist","technician","other"],
+    "conference-room": ["manager","cleaning", "security", "receptionist","technician","other"],
+    "reception-room": ["receptionist", "manager","cleaning"]
 };
 function fillEmployeesToAddLIst(room) {
     console.log(room);
