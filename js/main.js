@@ -1,18 +1,14 @@
 let employeeList = document.getElementById("employee-list");
-//arrays to store the staff
-let employeeTab = JSON.parse(localStorage.getItem("employees")) || [];
-let addEmployeeBtn = document.getElementById("add-employee-btn");
-let receptArr = JSON.parse(localStorage.getItem("receptionists")) || [];
-let techniciancsArr = JSON.parse(localStorage.getItem("technicians")) || [];
-let secAgents = JSON.parse(localStorage.getItem("securityAgents")) || [];
 //add button in the aside section to open the form
 let addForm = document.getElementById("add-employee-form");
 //form buttons
+let addEmployeeBtn = document.getElementById("add-employee-btn");
 let form = document.getElementById("form");
 let closeForm = document.getElementById("closeForm");
 let dynamicDiv = document.getElementById("divForDynamicSection");
 let addMoreExperience = document.getElementById("moreExperienceBtn");
 //global variables
+
 let experienceCount = 0;
 let currentEmpID = null;
 const roomLimits = {
@@ -361,9 +357,6 @@ function removeEmployee(empId) {
     }
 
 }
-// Initialize when DOM is loaded
-// Drag and drop functionality (keep your existing implementation)
-
 function showEmployeeDetails(employeeId) {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
 
@@ -435,7 +428,7 @@ function showEmployeeDetails(employeeId) {
 
     employeeDetailsPopup.classList.remove("hidden");
 }
-// Close employee details popup
+//close employee details popup
 function closeEmployeeDetails() {
     employeeDetailsPopup.classList.add("hidden");
 }
@@ -585,7 +578,6 @@ function renderAllRooms() {
 
         const assignedEmployees = employees.filter(e => e.currentLocation === room);
         const roomLimit = roomLimits[room];
-        // ?? Infinity
         if (assignedEmployees.length === 0) {
             employeeArea.innerHTML = `
                 <p class="text-sm italic opacity-75 text-center">Empty zone</p>
@@ -620,26 +612,18 @@ function renderAllRooms() {
     });
 }
 
-
-
 document.getElementById("jobsFilter").addEventListener("change", fillTheUnassignedWorkersAuto);
 document.getElementById("searchInput").addEventListener("input", fillTheUnassignedWorkersAuto);
 
 fillTheUnassignedWorkersAuto();
-// enableDragAndDrop();
+enableDragAndDrop();
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchInput").value = "";
     document.getElementById("jobsFilter").value = "";
     initForm();
     enableDragAndDrop();
     makeRoomsDroppable();
-    // console.log("make rooms droppable");
-
-
 })
-
-
-
 function enableDragAndDrop() {
     let draggableElements = document.querySelectorAll(".dragged-element");
     let draggableAreas = document.querySelectorAll(".dragging-area");
@@ -650,7 +634,6 @@ function enableDragAndDrop() {
             let empID = emp.id;
             let role =  empID.split('=')[0];
 
-            // highlight rooms
             draggableAreas.forEach(room => {
                 let allowedRoles = roomRoles[room.id] || [];
                 if (allowedRoles.includes(role)) {
@@ -692,34 +675,17 @@ function makeRoomsDroppable() {
     let listOfdraggableRooms = document.querySelectorAll('.dragging-area')
     listOfdraggableRooms.forEach(room => {
         let roomId = room.id;
-        // console.log(roomId);
-        // console.log(roomRoles[roomId]);
         room.addEventListener('dragover', (e) => {
-            // console.log("in dragover");
             
             e.preventDefault();
         });
         room.addEventListener('drop', (e) => {
             e.preventDefault();
             let empId = e.dataTransfer.getData('text/plain').split('=')[1];
-            // console.log("drop");
-
             console.log(empId);
 
             let employees = JSON.parse(localStorage.getItem("employees")) || [];
-            // console.log(employees);
-
             let employee = employees.find(emp => emp.ID === empId);
-            // console.log("founded employee");
-
-            // console.log(employee);
-
-
-            // console.log("targeted room");
-            // console.log(roomId);
-
-            // console.log(roomRoles[roomId]);
-
 
             if (!roomRoles[roomId].includes(employee.poste)) {
                 Toastify({
