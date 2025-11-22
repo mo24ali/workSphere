@@ -39,15 +39,15 @@ Hosted (if applicable) at: [https://mo24ali.github.io/workSphere/](https://mo24a
 
 - HTML5  
 - CSS3  
-- JavaScript (Vanilla)  
-- Hosted using GitHub Pages (or any static web host)  
-- *[Optional: list any libraries/frameworks used]*  
+- JavaScript   
+- Hosted using GitHub Pages   
+- Tailwindcss  
 
 ## 🚀 Getting Started
 
 ### Prerequisites  
 You only need a browser to run this project (no special setup required).  
-*(If you use a local server: e.g., Node.js + live‑server, mention here.)*
+If you use a local server: Node.js + live‑server
 
 ### Installation / Running Locally
 
@@ -82,7 +82,7 @@ Place your own images or asset files into the assets/ folder.
 
 Deploy via GitHub Pages by enabling Pages in repo settings.
 
-[Add specific usage instructions if you have special UI parts: e.g., “Click the plus icon to add a widget”, “Use the sidebar to switch themes”]
+
 
 🤝 Contributing
 Thank you for your interest! Contributions are welcome. Please follow these steps:
