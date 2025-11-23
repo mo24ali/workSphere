@@ -23,7 +23,6 @@ const roomLimits = {
 let employeeDetailsPopup = document.getElementById("employee-details-popup");
 let employeeDetailsContent = document.getElementById("employee-details-content");
 let closeDetailsPopup = document.getElementById("closeDetailsPopup");
-// Initialize form functionality
 
 function fillTheUnassignedWorkersAuto() {
     const arr = JSON.parse(localStorage.getItem("employees")) || [];
@@ -63,9 +62,10 @@ function fillTheUnassignedWorkersAuto() {
             </div>
         </li>
         `;
-    }).join('');
+    }).join("")
     enableDragAndDrop();
 }
+//initialize form functionality open and close
 
 function initForm() {
     setupEventListeners();
@@ -77,27 +77,32 @@ function setupEventListeners() {
     closeForm.addEventListener("click", closeFormHandler);
     addMoreExperience.addEventListener("click", addExperienceField);
     form.addEventListener("submit", handleFormSubmit);
-    closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
-    employeeDetailsPopup.addEventListener("click", (e) => {
-        if (e.target === employeeDetailsPopup) {
-            closeEmployeeDetails();
-        }
-    });
+    //to handle the close poopup by clicking on the lcose button
+        closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
+    //to handle the close of popup when clicking on the outside of the details container
+        employeeDetailsPopup.addEventListener("click", (e) => {
+            if (e.target === employeeDetailsPopup) {
+                closeEmployeeDetails();
+            }
+        });
 }
 function openForm() {
     addForm.classList.remove("hidden");
+    //reset the form to clear the input for another adding operation
     resetForm();
 }
-function closeFormHandler() {
+function closeFormHandler() {   
     resetForm();
     addForm.classList.add("hidden");
 }
 function resetForm() {
+    //reset the form .reset() to clear the input for another adding operation
     form.reset();
     dynamicDiv.innerHTML = "";
     experienceCount = 0;
     currentEmpID = null;
 }
+//experience adding and deleting functions
 function addExperienceField() {
     experienceCount++;
 
@@ -172,7 +177,7 @@ function confirmExperience(button) {
     const expDesc = descInput.value.trim();
     const startDate = startInput.value;
     const endDate = endInput.value;
-    // Validate this specific experience
+    //validate this specific experience
     if (!expTitle) {
         alert('Please enter a title for this experience');
         return;
@@ -181,7 +186,7 @@ function confirmExperience(button) {
         alert('End date cannot be before start date');
         return;
     }
-    // Convert to read-only display
+    //convert to read-only display
     experienceField.innerHTML = `
         <h3 class="font-medium mb-2">Experience #${Array.from(document.querySelectorAll('.experience-field')).indexOf(experienceField) + 1}</h3>
         <p><strong>Title:</strong> ${expTitle}</p>
@@ -199,6 +204,8 @@ function confirmExperience(button) {
         style: { background: "green" }
     }).showToast();
 }
+//validate form function
+document.getElementById("profilePictureInput").addEventListener("input", previewProfilePictureURL);
 function validateForm() {
     const name = document.getElementById("nom").value.trim();
     const firstname = document.getElementById("pnom").value.trim();
@@ -226,7 +233,6 @@ function validateForm() {
         return false;
     }
 
-    const experienceFields = document.querySelectorAll('.experience-field');
     const unconfirmedExperiences = document.querySelectorAll('.experience-field:has(.confirm-exp-btn)');
     if (unconfirmedExperiences.length > 0) {
         alert('Please confirm all experiences before submitting');
@@ -236,40 +242,21 @@ function validateForm() {
     return true;
 }
 function handleFormSubmit(e) {
-    e.preventDefault();
+    e.preventDefault(); //to prevent browser reload
     if (!validateForm()) {
         return;
     }
-    const name = document.getElementById("nom").value.trim();
-    const firstname = document.getElementById("pnom").value.trim();
-    const email = document.getElementById("mail").value.trim();
-    const poste = document.getElementById("positionsSelector").value;
-    const desc = document.getElementById("desc").value.trim();
-
-    const experiences = [];
-    const experienceFields = document.querySelectorAll('.experience-field');
-    experienceFields.forEach(field => {
-        const paragraphs = field.querySelectorAll('p');
-        if (paragraphs.length >= 4) {
-            experiences.push({
-                title: paragraphs[0].textContent.replace('Title:', '').trim(),
-                desc: paragraphs[1].textContent.replace('Description:', '').trim(),
-                startDate: paragraphs[2].textContent.replace('Start:', '').trim(),
-                endDate: paragraphs[3].textContent.replace('End:', '').trim()
-            });
-        }
-    });
-    addEmployee(name, firstname, email, poste, desc, experiences);
+    addEmployee();
 }
 function naiveId() {
     let employees = JSON.parse(localStorage.getItem("employees")) || [];
     let id;
+    //to verify that the ID is not duplicated
     do {
         id = Date.now().toString(36) + Math.random().toString(36).substr(2);
     } while (employees.some(emp => emp.ID === id));
     return id;
 }
-document.getElementById("profilePictureInput").addEventListener("input", previewProfilePictureURL);
 function previewProfilePictureURL() {
     const url = document.getElementById("profilePictureInput").value.trim();
     const preview = document.getElementById("profilePreview");
@@ -349,13 +336,9 @@ function removeEmployee(empId) {
         localStorage.setItem("employees", JSON.stringify(employeeArray));
         fillTheUnassignedWorkersAuto();
         renderAllRooms();
-
-
     } catch (e) {
         console.log("error deleting employee with id " + empId);
-
     }
-
 }
 function showEmployeeDetails(employeeId) {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
