@@ -32,11 +32,11 @@ function fillTheUnassignedWorkersAuto() {
     const searchValue = document.getElementById("searchInput").value.toLowerCase();
 
     let result = arr.filter(emp => emp.currentLocation === "unassigned");
-
+    //filter the workers based on their jobs
     if (filterJob !== "") {
         result = result.filter(emp => emp.poste === filterJob);
     }
-
+    //filter the workers based on search of their names
     if (searchValue.trim() !== "") {
         result = result.filter(emp =>
             emp.nom.toLowerCase().includes(searchValue) ||
@@ -359,75 +359,88 @@ function removeEmployee(empId) {
 }
 function showEmployeeDetails(employeeId) {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
-
     const employee = employees.find(emp => emp.ID === employeeId);
     console.log(employee);
 
     const experiencesHTML = employee.experiences && employee.experiences.length > 0
         ? employee.experiences.map((exp, index) => `
-            <div class="border rounded p-3 mb-3">
-                <h4 class="font-medium mb-2">Experience #${index + 1}</h4>
-                <p><strong>Title:</strong> ${exp.title || 'N/A'}</p>
-                <p><strong>Description:</strong> ${exp.desc || 'N/A'}</p>
-                <p><strong>Start Date:</strong> ${exp.startDate || 'N/A'}</p>
-                <p><strong>End Date:</strong> ${exp.endDate || 'N/A'}</p>
+            <div class="border rounded-xl p-4 mb-4 shadow-sm hover:shadow-md transition-all bg-white">
+                <div class="flex items-center justify-between mb-2">
+                    <h4 class="font-semibold text-lg">Experience #${index + 1}</h4>
+                    <span class="bg-blue-100 text-blue-700 text-xs font-medium px-2 py-1 rounded-full">
+                        ${exp.title || 'Experience'}
+                    </span>
+                </div>
+                <p class="text-sm"><strong>Description:</strong> ${exp.desc || 'N/A'}</p>
+                <div class="flex gap-3 mt-2 text-sm text-gray-700">
+                    <p><strong>Start:</strong> ${exp.startDate || 'N/A'}</p>
+                    <p><strong>End:</strong> ${exp.endDate || 'N/A'}</p>
+                </div>
             </div>
-        `).join('')
-        : '<p class="text-gray-500">No experiences added</p>';
+        `).join("")
+        : '<p class="text-gray-500 italic">No experiences added</p>';
 
     employeeDetailsContent.innerHTML = `
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
-            <div class="md:col-span-1 flex flex-col items-center">
-                <img src="${employee.profilePicture || 'assets/guy.png'}" 
-                     alt="${employee.nom} ${employee.prenom}" 
-                     class="w-32 h-32 rounded-full object-cover border-4 border-gray-200 mb-4">
-                <h3 class="text-xl font-bold">${employee.nom} ${employee.prenom}</h3>
-                <p class="text-gray-600">${employee.poste}</p>
-            </div>
+        <div class="bg-white p-6 rounded-2xl shadow-xl">
+        
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             
-            <div class="md:col-span-2 space-y-4">
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700">Last Name</label>
-                        <p class="mt-1 p-2 bg-gray-50 rounded">${employee.nom}</p>
+                <div class="flex flex-col items-center text-center border-r md:border-r-2 border-gray-200 pr-6">
+                    <img src="${employee.profilePicture || 'assets/guy.png'}"
+                        alt="${employee.nom} ${employee.prenom}"
+                        class="w-36 h-36 rounded-full object-cover border-4 border-indigo-200 shadow-md mb-4">
+                    
+                    <h3 class="text-2xl font-bold text-gray-900">${employee.nom} ${employee.prenom}</h3>
+                    <p class="text-indigo-600 font-medium mt-1">${employee.poste}</p>
+
+                    <span class="mt-3 bg-green-100 text-green-700 px-3 py-1 rounded-full text-sm">
+                        ${employee.currentLocation || 'No location'}
+                    </span>
+                </div>
+
+                <div class="md:col-span-2 space-y-6">
+                    
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                        <div>
+                            <label class="text-sm font-semibold text-gray-600">Last Name</label>
+                            <p class="detail-field">${employee.nom}</p>
+                        </div>
+                        <div>
+                            <label class="text-sm font-semibold text-gray-600">First Name</label>
+                            <p class="detail-field">${employee.prenom}</p>
+                        </div>
                     </div>
+                    
                     <div>
-                        <label class="block text-sm font-medium text-gray-700">First Name</label>
-                        <p class="mt-1 p-2 bg-gray-50 rounded">${employee.prenom}</p>
+                        <label class="text-sm font-semibold text-gray-600">Email</label>
+                        <p class="detail-field">${employee.email}</p>
                     </div>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Email</label>
-                    <p class="mt-1 p-2 bg-gray-50 rounded">${employee.email}</p>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Position</label>
-                    <p class="mt-1 p-2 bg-gray-50 rounded">${employee.poste}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Position</label>
-                    <p class="mt-1 p-2 bg-gray-50 rounded min-h-[40px]">${employee.currentLocation || 'No location provided'}</p>
-                </div>
-                <div>
-                    <label class="block text-sm font-medium text-gray-700">Description</label>
-                    <p class="mt-1 p-2 bg-gray-50 rounded min-h-[80px]">${employee.description || 'No description provided'}</p>
-                </div>
-                
-                <div>
-                    <label class="block text-sm font-medium text-gray-700 mb-2">Work Experiences</label>
-                    <div class="max-h-60 overflow-y-auto">
-                        ${experiencesHTML}
+                    
+                    <div>
+                        <label class="text-sm font-semibold text-gray-600">Position</label>
+                        <p class="detail-field">${employee.poste}</p>
+                    </div>
+
+                    <div>
+                        <label class="text-sm font-semibold text-gray-600">Description</label>
+                        <p class="detail-field min-h-[80px]">${employee.description || 'No description provided'}</p>
+                    </div>
+                    
+                    <div>
+                        <label class="text-sm font-semibold text-gray-700 mb-2 block">Work Experiences</label>
+                        <div class="max-h-64 overflow-y-auto pr-2">
+                            ${experiencesHTML}
+                        </div>
                     </div>
                 </div>
             </div>
         </div>
     `;
-    console.log(employeeId);
 
     employeeDetailsPopup.classList.remove("hidden");
+    console.log(employeeId);
 }
+
 //close employee details popup
 function closeEmployeeDetails() {
     employeeDetailsPopup.classList.add("hidden");
@@ -495,7 +508,7 @@ window.onload = () => {
     renderAllRooms();
 }
 function validatePhone(phone) {
-    const phoneRegex = /^(?:\+212|0)([ \-]?\d){9}$/;
+    const phoneRegex = /^(\+212|0)(5|6|7|8)[0-9]{8}$/;
     return phoneRegex.test(phone);
 }
 function removeEmployeeFromRoom(empId) {
@@ -571,7 +584,7 @@ function renderAllRooms() {
         let employeeArea = roomContainer.querySelector(".room-employees");
         if (!employeeArea) {
             employeeArea = document.createElement("div");
-            employeeArea.classList.add("room-employees",'grid','grid-cols-2','grid-rows-2');
+            employeeArea.classList.add("room-employees", 'grid', 'grid-cols-2', 'grid-rows-2');
 
             const addBtn = roomContainer.querySelector(".add-btn");
             if (addBtn) {
@@ -702,7 +715,7 @@ function makeRoomsDroppable() {
                 }).showToast();
                 return;
             }
-            assignEmployeeToRoom(employee.ID , room.id)
+            assignEmployeeToRoom(employee.ID, room.id)
             fillTheUnassignedWorkersAuto();
             renderAllRooms();
         });
