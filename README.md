@@ -1,6 +1,7 @@
 # workSphere
 
-> A brief one‑sentence summary of what workSphere is: e.g., “A lightweight browser‑based workspace/dashboard application built with HTML, CSS & JavaScript.”
+> WorkSphere is a modern web application designed to manage workplace personnel directly on an interactive floor map,
+the goal is to provide a smooth, intuitive, and responsive interface where employees can be added, assigned to zones, moved, or removed in real-time while respecting business rules related to their roles.
 
 ## 📌 Table of Contents
 
