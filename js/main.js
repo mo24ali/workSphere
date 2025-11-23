@@ -447,19 +447,19 @@ addEmployeePopup.addEventListener("click", (e) => {
 })
 let roomRoles = {
     /**
-     * Reception → Receptionist, Manager, Cleaning Staff 
-Server Room → IT Technician, Manager, Cleaning Staff 
-Security Room → Security Agent, Manager, Cleaning Staff 
-Archive Room → Manager only 
-Conference Room → ALL 6 roles 
-Staff Room → ALL 6 roles
+     *  Reception → Receptionist, Manager, Cleaning Staff 
+        Server Room → IT Technician, Manager, Cleaning Staff 
+        Security Room → Security Agent, Manager, Cleaning Staff 
+        Archive Room → Manager only 
+        Conference Room → ALL 6 roles 
+        Staff Room → ALL 6 roles
      */
     "servers": ["technician", "manager", "cleaning"],
     "security-room": ["security", "cleaning", "manager"],
     "archive": ["manager"],
-    "staff-room": ["manager","cleaning", "security", "receptionist","technician","other"],
-    "conference-room": ["manager","cleaning", "security", "receptionist","technician","other"],
-    "reception-room": ["receptionist", "manager","cleaning"]
+    "staff-room": ["manager", "cleaning", "security", "receptionist", "technician", "other"],
+    "conference-room": ["manager", "cleaning", "security", "receptionist", "technician", "other"],
+    "reception-room": ["receptionist", "manager", "cleaning"]
 };
 function fillEmployeesToAddLIst(room) {
     console.log(room);
@@ -572,7 +572,7 @@ function renderAllRooms() {
         let employeeArea = roomContainer.querySelector(".room-employees");
         if (!employeeArea) {
             employeeArea = document.createElement("div");
-            employeeArea.classList.add("room-employees");
+            employeeArea.classList.add("room-employees", "grid", "grid-col-3", "grid-row-3");
 
             const addBtn = roomContainer.querySelector(".add-btn");
             if (addBtn) {
@@ -638,9 +638,9 @@ function enableDragAndDrop() {
 
     draggableElements.forEach(emp => {
         emp.addEventListener("dragstart", (e) => {
-            e.dataTransfer.setData("text/plain", emp.id);
+            e.dataTransfer.setData("ID", emp.id);
             let empID = emp.id;
-            let role =  empID.split('=')[0];
+            let role = empID.split('=')[0];
 
             draggableAreas.forEach(room => {
                 let allowedRoles = roomRoles[room.id] || [];
@@ -666,7 +666,7 @@ function enableDragAndDrop() {
         room.addEventListener("dragover", (e) => e.preventDefault());
         room.addEventListener("drop", (e) => {
             e.preventDefault();
-            const empId = e.dataTransfer.getData("text/plain");
+            const empId = e.dataTransfer.getData("ID");
             const role = employeeRoles[empId];
             const allowedRoles = roomRoles[room.id] || [];
             if (allowedRoles.includes(role)) {
@@ -684,12 +684,12 @@ function makeRoomsDroppable() {
     listOfdraggableRooms.forEach(room => {
         let roomId = room.id;
         room.addEventListener('dragover', (e) => {
-            
+
             e.preventDefault();
         });
         room.addEventListener('drop', (e) => {
-            e.preventDefault();
-            let empId = e.dataTransfer.getData('text/plain').split('=')[1];
+            // e.preventDefault();
+            let empId = e.dataTransfer.getData('ID').split('=')[1];
             console.log(empId);
 
             let employees = JSON.parse(localStorage.getItem("employees")) || [];
@@ -703,9 +703,7 @@ function makeRoomsDroppable() {
                 }).showToast();
                 return;
             }
-
-            employee.currentLocation = room.id;
-            localStorage.setItem("employees", JSON.stringify(employees));
+            assignEmployeeToRoom(employee.ID , room.id)
             fillTheUnassignedWorkersAuto();
             renderAllRooms();
         });
