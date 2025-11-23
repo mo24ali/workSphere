@@ -78,20 +78,20 @@ function setupEventListeners() {
     addMoreExperience.addEventListener("click", addExperienceField);
     form.addEventListener("submit", handleFormSubmit);
     //to handle the close poopup by clicking on the lcose button
-        closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
+    closeDetailsPopup.addEventListener("click", closeEmployeeDetails);
     //to handle the close of popup when clicking on the outside of the details container
-        employeeDetailsPopup.addEventListener("click", (e) => {
-            if (e.target === employeeDetailsPopup) {
-                closeEmployeeDetails();
-            }
-        });
+    employeeDetailsPopup.addEventListener("click", (e) => {
+        if (e.target === employeeDetailsPopup) {
+            closeEmployeeDetails();
+        }
+    });
 }
 function openForm() {
     addForm.classList.remove("hidden");
     //reset the form to clear the input for another adding operation
     resetForm();
 }
-function closeFormHandler() {   
+function closeFormHandler() {
     resetForm();
     addForm.classList.add("hidden");
 }
@@ -549,6 +549,7 @@ function assignEmployeeToRoom(empId, room) {
 
 function renderAllRooms() {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
+
     const rooms = [
         "conference-room",
         "reception-room",
@@ -557,10 +558,14 @@ function renderAllRooms() {
         "staff-room",
         "archive"
     ];
+
+    //list of room that must not be empty
+    const requiredRooms = ["reception-room", "servers", "archive", "security-room"];
+
     rooms.forEach(room => {
         const roomContainer = document.getElementById(room);
         if (!roomContainer) {
-            console.warn("rroom container not found:", room);
+            console.warn("room container not found:", room);
             return;
         }
 
@@ -578,29 +583,36 @@ function renderAllRooms() {
         }
 
         employeeArea.innerHTML = "";
-
         const assignedEmployees = employees.filter(e => e.currentLocation === room);
         const roomLimit = roomLimits[room];
+
         if (assignedEmployees.length === 0) {
+
+            if (requiredRooms.includes(room)) {
+                roomContainer.classList.add("bg-red-500/50");
+            } else {
+                roomContainer.classList.remove("bg-red-500/50");
+            }
+
             employeeArea.innerHTML = `
                 <p class="text-sm italic opacity-75 text-center">Empty zone</p>
             `;
         } else {
+            roomContainer.classList.remove("bg-red-500/50");
+
             assignedEmployees.forEach(emp => {
                 const card = document.createElement("div");
                 card.className = "employee-card bg-white border rounded-sm p-2 text-xs flex flex-col items-center gap-1";
 
                 card.innerHTML = `
-                     <div class="flex items-center gap-2">
-                            <img src="${emp.profilePicture}" alt="${emp.nom}"
-                                class="w-8 h-8 rounded-full object-cover">
-                        </div>
-                        <div class="flex flex-row gap-2">
-                            <button onclick="removeEmployeeFromRoom('${emp.ID}')"
-                            class="text-red-500 font-bold hover:text-red-700">X</button>
-                            <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center traonsform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${emp.ID}')">
-                        ...
-                    </button>
+                    <div class="flex items-center gap-2">
+                        <img src="${emp.profilePicture}" alt="${emp.nom}"
+                        class="w-8 h-8 rounded-full object-cover">
+                    </div>
+                    <div class="flex flex-row gap-2">
+                        <button onclick="removeEmployeeFromRoom('${emp.ID}')"
+                        class="text-red-500 font-bold hover:text-red-700">X</button>
+                        <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center transform duration-300 text-center" title="Show employee info" onclick="showEmployeeDetails('${emp.ID}')">...</button>
                     </div>
                 `;
                 employeeArea.appendChild(card);
@@ -620,10 +632,16 @@ document.getElementById("searchInput").addEventListener("input", fillTheUnassign
 
 fillTheUnassignedWorkersAuto();
 enableDragAndDrop();
+
+
+
+
+
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchInput").value = "";
     document.getElementById("jobsFilter").value = "";
     initForm();
+    renderAllRooms();
     enableDragAndDrop();
     makeRoomsDroppable();
 })
@@ -653,10 +671,11 @@ function enableDragAndDrop() {
             draggableAreas.forEach(room => {
                 room.classList.remove("bg-green-500/50", "bg-red-500/50");
             });
+            renderAllRooms();
         });
     });
 
-    // Optional: allow drop logic
+
     draggableAreas.forEach(room => {
         room.addEventListener("dragover", (e) => e.preventDefault());
         room.addEventListener("drop", (e) => {
@@ -671,6 +690,7 @@ function enableDragAndDrop() {
             }
         });
     });
+    renderAllRooms();
 }
 
 function makeRoomsDroppable() {
@@ -679,11 +699,9 @@ function makeRoomsDroppable() {
     listOfdraggableRooms.forEach(room => {
         let roomId = room.id;
         room.addEventListener('dragover', (e) => {
-
             e.preventDefault();
         });
         room.addEventListener('drop', (e) => {
-            // e.preventDefault();
             let empId = e.dataTransfer.getData('ID').split('=')[1];
             console.log(empId);
 
