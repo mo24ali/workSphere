@@ -690,7 +690,6 @@ function enableDragAndDrop() {
             }
         });
     });
-    renderAllRooms();
 }
 
 function makeRoomsDroppable() {
@@ -718,7 +717,6 @@ function makeRoomsDroppable() {
             }
             assignEmployeeToRoom(employee.ID, room.id)
             fillTheUnassignedWorkersAuto();
-            renderAllRooms();
         });
     });
 }
