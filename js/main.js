@@ -551,7 +551,6 @@ function assignEmployeeToRoom(empId, room) {
     if (popup) popup.classList.add("hidden");
 }
 
-
 function renderAllRooms() {
     const employees = JSON.parse(localStorage.getItem("employees")) || [];
     const rooms = [
@@ -565,14 +564,14 @@ function renderAllRooms() {
     rooms.forEach(room => {
         const roomContainer = document.getElementById(room);
         if (!roomContainer) {
-            console.warn("Room container not found:", room);
+            console.warn("rroom container not found:", room);
             return;
         }
 
         let employeeArea = roomContainer.querySelector(".room-employees");
         if (!employeeArea) {
             employeeArea = document.createElement("div");
-            employeeArea.classList.add("room-employees", "grid", "grid-col-3", "grid-row-3");
+            employeeArea.classList.add("room-employees",'grid','grid-cols-2','grid-rows-2');
 
             const addBtn = roomContainer.querySelector(".add-btn");
             if (addBtn) {
