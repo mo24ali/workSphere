@@ -66,7 +66,7 @@ npx http-server .
 
 Start building/customising your workspace.
 
-🧱 Project Structure
+🧱 Project Structure <br>
 workSphere/
 ├── .vscode/             ← VSCode specific configuration  
 ├── assets/              ← images 
