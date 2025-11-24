@@ -3,19 +3,19 @@
 > WorkSphere is a modern web application designed to manage workplace personnel directly on an interactive floor map,
 the goal is to provide a smooth, intuitive, and responsive interface where employees can be added, assigned to zones, moved, or removed in real-time while respecting business rules related to their roles.
 
-## 📌 Table of Contents
+##  Table of Contents
 
 - [workSphere](#worksphere)
-  - [📌 Table of Contents](#-table-of-contents)
-  - [📖 About](#-about)
+  - [Table of Contents](#table-of-contents)
+  - [About](#about)
     - [Main Objectives](#main-objectives)
-  - [✅ Features](#-features)
-  - [🛠 Tech Stack](#-tech-stack)
-  - [🚀 Getting Started](#-getting-started)
+  - [Features](#features)
+  - [Tech Stack](#tech-stack)
+  - [Getting Started](#getting-started)
     - [Prerequisites](#prerequisites)
     - [Installation / Running Locally](#installation--running-locally)
 
-## 📖 About
+##  About
 
 WorkSphere is an innovative web application designed for visual and interactive management of personnel within office spaces.  
 It allows real-time organization and allocation of employees on a floor plan while respecting role-based constraints and authorized zones.
@@ -28,7 +28,7 @@ It allows real-time organization and allocation of employees on a floor plan whi
 It is built using HTML, CSS and JavaScript, with a simple folder structure allowing for rapid deployment via GitHub Pages.  
 Hosted (if applicable) at: [https://mo24ali.github.io/workSphere/](https://mo24ali.github.io/workSphere/)  
 
-## ✅ Features
+##  Features
 
 - Browser‑based: no server required (static deployment).  
 - Responsive layout (works on both desktop & mobile).  
@@ -36,7 +36,7 @@ Hosted (if applicable) at: [https://mo24ali.github.io/workSphere/](https://mo24a
 - Easy to customise (just edit the HTML/JS files).  
 - Drag‑and‑drop
 
-## 🛠 Tech Stack
+##  Tech Stack
 
 - HTML5  
 - CSS3  
@@ -44,7 +44,7 @@ Hosted (if applicable) at: [https://mo24ali.github.io/workSphere/](https://mo24a
 - Hosted using GitHub Pages   
 - Tailwindcss  
 
-## 🚀 Getting Started
+##  Getting Started
 
 ### Prerequisites  
 You only need a browser to run this project (no special setup required).  
@@ -66,7 +66,7 @@ npx http-server .
 
 Start building/customising your workspace.
 
-🧱 Project Structure
+ Project Structure
 workSphere/
 ├── .vscode/             ← VSCode specific configuration  
 ├── assets/              ← images 
@@ -74,7 +74,7 @@ workSphere/
 ├── index.html           ← Entry point  
 ├── README.md            ← Project README  
 └── .gitignore           ← Git ignore rules  
-🧩 Usage
+ Usage
 Open index.html and explore the UI.
 
 Modify or extend js/ files to add new functionality.
@@ -85,7 +85,7 @@ Deploy via GitHub Pages by enabling Pages in repo settings.
 
 
 
-🤝 Contributing
+ Contributing
 Thank you for your interest! Contributions are welcome. Please follow these steps:
 
 Fork the repository
@@ -100,10 +100,10 @@ Open a Pull Request describing your changes.
 
 Please ensure your code adheres to the existing style and you test any additions.
 
-📄 License
+ License
 This project is licensed under the MIT License – see the LICENSE file for details.
 
-📬 Contact
+ Contact
 Created by @mo24ali.
 Feel free to reach out if you have questions, ideas, or just want to say hi.
 
