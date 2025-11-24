@@ -65,7 +65,7 @@ function fillTheUnassignedWorkersAuto() {
     enableDragAndDrop();
 }
 
- //button class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">Edit</button>
+//button class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">Edit</button>
 
 //initialize form functionality open and close
 
@@ -674,22 +674,6 @@ function enableDragAndDrop() {
                 room.classList.remove("bg-green-500/50", "bg-red-500/50");
             });
             renderAllRooms();
-        });
-    });
-
-
-    draggableAreas.forEach(room => {
-        room.addEventListener("dragover", (e) => e.preventDefault());
-        room.addEventListener("drop", (e) => {
-            e.preventDefault();
-            const empId = e.dataTransfer.getData("ID");
-            const role = employeeRoles[empId];
-            const allowedRoles = roomRoles[room.id] || [];
-            if (allowedRoles.includes(role)) {
-                room.appendChild(document.getElementById(empId));
-            } else {
-                alert("You cannot drop this employee here!");
-            }
         });
     });
 }
