@@ -66,7 +66,7 @@ npx http-server .
 
 Start building/customising your workspace.
 
- Project Structure
+🧱 Project Structure
 workSphere/
 ├── .vscode/             ← VSCode specific configuration  
 ├── assets/              ← images 
@@ -85,7 +85,7 @@ Deploy via GitHub Pages by enabling Pages in repo settings.
 
 
 
- Contributing
+🤝 Contributing
 Thank you for your interest! Contributions are welcome. Please follow these steps:
 
 Fork the repository
@@ -100,10 +100,10 @@ Open a Pull Request describing your changes.
 
 Please ensure your code adheres to the existing style and you test any additions.
 
- License
+📄 License
 This project is licensed under the MIT License – see the LICENSE file for details.
 
- Contact
+📬 Contact
 Created by @mo24ali.
 Feel free to reach out if you have questions, ideas, or just want to say hi.
 
