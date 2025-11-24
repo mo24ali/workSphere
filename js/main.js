@@ -19,6 +19,10 @@ const roomLimits = {
     "staff-room": 6,
     "archive": 1
 };
+//add employee to room popup
+let addEmployeePopup = document.getElementById("add-employee-popup");
+let closeAddEmployeePopup = document.getElementById("closeAddEmployeePopup");
+let listOfEmployeesToAdd = document.getElementById("add-employee-content");
 //popup variables 
 let employeeDetailsPopup = document.getElementById("employee-details-popup");
 let employeeDetailsContent = document.getElementById("employee-details-content");
@@ -64,9 +68,6 @@ function fillTheUnassignedWorkersAuto() {
     }).join("")
     enableDragAndDrop();
 }
-
-//button class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">Edit</button>
-
 //initialize form functionality open and close
 
 function initForm() {
@@ -400,6 +401,10 @@ function showEmployeeDetails(employeeId) {
                         <label class="text-sm font-semibold text-gray-600">Email</label>
                         <p class="detail-field">${employee.email}</p>
                     </div>
+                    <div>
+                        <label class="text-sm font-semibold text-gray-600">Phone number:</label>
+                        <p class="detail-field">${employee.phone}</p>
+                    </div>
                     
                     <div>
                         <label class="text-sm font-semibold text-gray-600">Position</label>
@@ -430,10 +435,7 @@ function showEmployeeDetails(employeeId) {
 function closeEmployeeDetails() {
     employeeDetailsPopup.classList.add("hidden");
 }
-//add employee to room popup
-let addEmployeePopup = document.getElementById("add-employee-popup");
-let closeAddEmployeePopup = document.getElementById("closeAddEmployeePopup");
-let listOfEmployeesToAdd = document.getElementById("add-employee-content");
+
 closeAddEmployeePopup.addEventListener("click", () => {
     addEmployeePopup.classList.add("hidden");
 
@@ -631,13 +633,6 @@ function renderAllRooms() {
 
 document.getElementById("jobsFilter").addEventListener("change", fillTheUnassignedWorkersAuto);
 document.getElementById("searchInput").addEventListener("input", fillTheUnassignedWorkersAuto);
-
-fillTheUnassignedWorkersAuto();
-enableDragAndDrop();
-
-
-
-
 
 document.addEventListener("DOMContentLoaded", () => {
     document.getElementById("searchInput").value = "";
