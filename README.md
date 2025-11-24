@@ -9,6 +9,7 @@ WorkSphere est une application web interactive permettant de gérer et d’organ
 ### Gestion du personnel
 
 * Ajouter de nouveaux employés.
+* Supprimer un employé
 
 ### Carte interactive
 
