@@ -55,7 +55,6 @@ function fillTheUnassignedWorkersAuto() {
                 <div class="employee-actions flex gap-2">
                     <div class="flex flex-col gap-2">
                         <button class="px-3 py-1 text-xs border border-red-500 text-red-500 rounded hover:bg-red-500 hover:text-white transition duration-300" onclick="removeEmployee('${element.ID}')">Delete</button>
-                        <button class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">Edit</button>
                     </div>
                     <button class="rounded-full border w-7 h-7 hover:bg-gray-500 hover:text-white justify-center items-center transform duration-300 text-center" title="Show employees info" onclick="showEmployeeDetails('${element.ID}')">...</button>
                 </div>
@@ -65,6 +64,9 @@ function fillTheUnassignedWorkersAuto() {
     }).join("")
     enableDragAndDrop();
 }
+
+ //button class="px-3 py-1 text-xs border border-yellow-500 text-yellow-500 rounded hover:bg-yellow-500 hover:text-white transition duration-300">Edit</button>
+
 //initialize form functionality open and close
 
 function initForm() {
